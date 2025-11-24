@@ -59,7 +59,7 @@ export default async function BookPage() {
                                             </h3>
                                             {chapter.excerpt && (
                                                 <div
-                                                    className="mt-2 text-muted-foreground line-clamp-3 font-sans text-base prose prose-sm dark:prose-invert max-w-none"
+                                                    className="mt-2 text-muted-foreground line-clamp-3 font-sans text-base prose prose-sm dark:prose-invert max-w-none prose-p:my-1"
                                                     dangerouslySetInnerHTML={{ __html: chapter.excerpt }}
                                                 />
                                             )}

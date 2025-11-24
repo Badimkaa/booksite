@@ -21,13 +21,16 @@ import {
 } from 'lucide-react';
 import { useCallback } from 'react';
 
+import { cn } from '@/lib/utils';
+
 interface RichTextEditorProps {
     content: string;
     onChange: (content: string) => void;
     placeholder?: string;
+    className?: string;
 }
 
-export function RichTextEditor({ content, onChange, placeholder }: RichTextEditorProps) {
+export function RichTextEditor({ content, onChange, placeholder, className }: RichTextEditorProps) {
     const editor = useEditor({
         extensions: [
             StarterKit,
@@ -42,7 +45,7 @@ export function RichTextEditor({ content, onChange, placeholder }: RichTextEdito
         content,
         editorProps: {
             attributes: {
-                class: 'prose prose-lg dark:prose-invert max-w-none focus:outline-none min-h-[300px]',
+                class: cn('prose prose-lg dark:prose-invert max-w-none focus:outline-none min-h-[300px]', className),
             },
         },
         onUpdate: ({ editor }) => {

@@ -96,6 +96,7 @@ export function ChapterEditor({ chapter }: ChapterEditorProps) {
                             content={excerpt}
                             onChange={setExcerpt}
                             placeholder="О чем эта глава..."
+                            className="prose-p:my-1 min-h-[150px]"
                         />
                     </div>
                     <p className="text-xs text-muted-foreground mt-1">
