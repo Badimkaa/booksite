@@ -4,6 +4,7 @@ import { cookies } from 'next/headers';
 import { getChapter, getChapters } from '@/lib/db';
 import { Button } from '@/components/ui/Button';
 import { ChevronLeft, ChevronRight, Home } from 'lucide-react';
+import ProgressSaver from '@/components/book/ProgressSaver';
 
 interface ReadPageProps {
     params: Promise<{
@@ -81,6 +82,7 @@ export default async function ReadPage({ params }: ReadPageProps) {
             )}
 
             <article className="container mx-auto max-w-2xl py-16 px-4">
+                <ProgressSaver slug={decodedSlug} title={chapter.title} />
                 <header className="mb-12 text-center">
                     <h1 className="text-4xl md:text-5xl font-bold mb-4">{chapter.title}</h1>
                     <div className="text-muted-foreground font-sans text-sm">

@@ -16,6 +16,7 @@ export function ChapterEditor({ chapter }: ChapterEditorProps) {
     const router = useRouter();
     const [isLoading, setIsLoading] = useState(false);
     const [title, setTitle] = useState(chapter?.title || '');
+    const [excerpt, setExcerpt] = useState(chapter?.excerpt || '');
     const [content, setContent] = useState(chapter?.content || '');
     const [published, setPublished] = useState(chapter?.published || false);
 
@@ -30,6 +31,7 @@ export function ChapterEditor({ chapter }: ChapterEditorProps) {
                 body: JSON.stringify({
                     id: chapter?.id,
                     title,
+                    excerpt,
                     content,
                     published,
                     createdAt: chapter?.createdAt,
@@ -85,6 +87,20 @@ export function ChapterEditor({ chapter }: ChapterEditorProps) {
                         required
                         className="text-lg font-serif"
                     />
+                </div>
+
+                <div>
+                    <label className="block text-sm font-medium mb-1">Краткое описание (для оглавления)</label>
+                    <div className="min-h-[150px]">
+                        <RichTextEditor
+                            content={excerpt}
+                            onChange={setExcerpt}
+                            placeholder="О чем эта глава..."
+                        />
+                    </div>
+                    <p className="text-xs text-muted-foreground mt-1">
+                        Если оставить пустым, описание будет создано автоматически из начала текста.
+                    </p>
                 </div>
 
                 <div className="p-4 border rounded-lg bg-muted/30">

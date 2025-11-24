@@ -38,6 +38,40 @@ export async function saveChapter(chapter: Chapter): Promise<void> {
     const existingIndex = chapters.findIndex((c) => c.id === chapter.id);
 
     if (existingIndex >= 0) {
+        // Check for removed images
+        const oldChapter = chapters[existingIndex];
+        const imgRegex = /<img[^>]+src="([^">]+)"/g;
+
+        const oldImages = new Set<string>();
+        let match;
+        while ((match = imgRegex.exec(oldChapter.content)) !== null) {
+            if (match[1].startsWith('/uploads/')) {
+                oldImages.add(match[1]);
+            }
+        }
+
+        const newImages = new Set<string>();
+        while ((match = imgRegex.exec(chapter.content)) !== null) {
+            if (match[1].startsWith('/uploads/')) {
+                newImages.add(match[1]);
+            }
+        }
+
+        // Delete images that are in old but not in new
+        for (const img of oldImages) {
+            if (!newImages.has(img)) {
+                const filename = img.split('/').pop();
+                if (filename) {
+                    const filepath = path.join(process.cwd(), 'public/uploads', filename);
+                    try {
+                        await fs.unlink(filepath);
+                    } catch (error) {
+                        console.error(`Failed to delete file: ${filepath}`, error);
+                    }
+                }
+            }
+        }
+
         chapters[existingIndex] = chapter;
     } else {
         chapters.push(chapter);
