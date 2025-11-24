@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { Button } from '@/components/ui/Button';
 import { CheckCircle2, Star, Heart, Users, Calendar } from 'lucide-react';
+import { SOCIAL_LINKS } from '@/config/social';
 
 export default function MentorshipPage() {
     return (
@@ -18,7 +19,7 @@ export default function MentorshipPage() {
                         3-х месячное глубокое погружение в работу с телом, сознанием и состоянием.
                         Верни себе себя в поддерживающем кругу единомышленниц.
                     </p>
-                    <a href="https://t.me/username" target="_blank" rel="noopener noreferrer">
+                    <a href={SOCIAL_LINKS.TELEGRAM} target="_blank" rel="noopener noreferrer">
                         <Button size="lg" variant="secondary" className="text-lg px-10 h-14 shadow-xl hover:shadow-2xl transition-all transform hover:-translate-y-1">
                             Заполнить анкету предзаписи
                         </Button>
@@ -97,7 +98,7 @@ export default function MentorshipPage() {
                         Количество мест в группе ограничено для сохранения камерной и доверительной атмосферы.
                         Заполни анкету, чтобы попасть в список предзаписи.
                     </p>
-                    <a href="https://t.me/username" target="_blank" rel="noopener noreferrer">
+                    <a href={SOCIAL_LINKS.TELEGRAM} target="_blank" rel="noopener noreferrer">
                         <Button size="lg" className="text-lg px-12 h-16 rounded-full">
                             Заполнить анкету
                         </Button>

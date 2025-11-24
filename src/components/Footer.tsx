@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { SOCIAL_LINKS } from '@/config/social';
 
 export function Footer() {
     return (
@@ -22,7 +23,7 @@ export function Footer() {
                 <div className="grid gap-2">
                     <h4 className="font-semibold mb-2">Контакты</h4>
                     <Link href="/feedback" className="text-muted-foreground hover:text-primary transition-colors">Связаться со мной</Link>
-                    <a href="https://t.me/username" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors">
+                    <a href={SOCIAL_LINKS.TELEGRAM} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors">
                         Telegram канал
                     </a>
                     <Link href="/login" className="text-muted-foreground hover:text-primary transition-colors mt-4 inline-block text-xs">

@@ -6,6 +6,7 @@ import { Chapter } from '@/types';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { Loader2 } from 'lucide-react';
+import { RichTextEditor } from './RichTextEditor';
 
 interface ChapterEditorProps {
     chapter?: Chapter;
@@ -110,12 +111,10 @@ export function ChapterEditor({ chapter }: ChapterEditorProps) {
 
                 <div>
                     <label className="block text-sm font-medium mb-1">Текст главы</label>
-                    <textarea
-                        value={content}
-                        onChange={(e) => setContent(e.target.value)}
-                        className="w-full min-h-[500px] p-4 rounded-md border border-input bg-background font-serif text-lg leading-relaxed resize-y focus:outline-none focus:ring-2 focus:ring-ring"
+                    <RichTextEditor
+                        content={content}
+                        onChange={setContent}
                         placeholder="Пишите вашу книгу здесь..."
-                        required
                     />
                 </div>
 

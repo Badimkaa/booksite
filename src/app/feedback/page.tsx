@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/Button';
 import { cn } from '@/lib/utils';
 import { MessageCircle } from 'lucide-react';
+import { SOCIAL_LINKS } from '@/config/social';
 
 const cards = [
     {
@@ -25,7 +26,7 @@ const cards = [
         title: "Отношения",
         description: "Сложно с собой, с партнером, с миром. Хочу любви и принятия.",
         result: "Все начинается с любви к себе. Приходи на личную консультацию, мы найдем ключ к твоему сердцу.",
-        link: "https://t.me/username"
+        link: SOCIAL_LINKS.TELEGRAM
     }
 ];
 
@@ -87,7 +88,7 @@ export default function FeedbackPage() {
                     <p className="text-muted-foreground mb-8">
                         Напиши мне в Telegram, и мы подберем формат работы, который подойдет именно тебе.
                     </p>
-                    <a href="https://t.me/username" target="_blank" rel="noopener noreferrer">
+                    <a href={SOCIAL_LINKS.TELEGRAM} target="_blank" rel="noopener noreferrer">
                         <Button size="lg" className="gap-2">
                             <MessageCircle className="h-5 w-5" />
                             Написать мне

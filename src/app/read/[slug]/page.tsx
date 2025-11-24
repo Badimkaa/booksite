@@ -66,9 +66,10 @@ export default async function ReadPage({ params }: ReadPageProps) {
                     </div>
                 </header>
 
-                <div className="prose prose-lg dark:prose-invert mx-auto whitespace-pre-wrap leading-loose text-lg text-foreground/90">
-                    {chapter.content}
-                </div>
+                <div
+                    className="prose prose-lg dark:prose-invert mx-auto whitespace-pre-wrap leading-loose text-lg text-foreground/90"
+                    dangerouslySetInnerHTML={{ __html: chapter.content }}
+                />
 
                 {chapter.videoUrl && (
                     <div className="mt-12 aspect-video rounded-xl overflow-hidden shadow-lg">
