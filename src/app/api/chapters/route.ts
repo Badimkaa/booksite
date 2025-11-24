@@ -22,7 +22,7 @@ export async function POST(request: Request) {
         title,
         slug,
         content,
-        excerpt: excerpt || content.substring(0, 150) + '...',
+        excerpt: excerpt || content.replace(/<[^>]*>?/gm, '').substring(0, 150) + '...',
         published: published || false,
         createdAt: body.createdAt || new Date().toISOString(),
         updatedAt: new Date().toISOString(),

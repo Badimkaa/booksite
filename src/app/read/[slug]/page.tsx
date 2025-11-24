@@ -1,5 +1,6 @@
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
+import { cookies } from 'next/headers';
 import { getChapter, getChapters } from '@/lib/db';
 import { Button } from '@/components/ui/Button';
 import { ChevronLeft, ChevronRight, Home } from 'lucide-react';
@@ -15,7 +16,10 @@ export default async function ReadPage({ params }: ReadPageProps) {
     const decodedSlug = decodeURIComponent(slug);
     const chapter = await getChapter(decodedSlug);
 
-    if (!chapter || !chapter.published) {
+    const cookieStore = await cookies();
+    const isAuthenticated = cookieStore.get('auth_token')?.value === 'authenticated';
+
+    if (!chapter || (!chapter.published && !isAuthenticated)) {
         notFound();
     }
 
@@ -57,6 +61,24 @@ export default async function ReadPage({ params }: ReadPageProps) {
                     </div>
                 </div>
             </nav>
+
+            {!chapter.published && (
+                <div className="bg-yellow-100 dark:bg-yellow-900/30 border-b border-yellow-200 dark:border-yellow-800 text-yellow-800 dark:text-yellow-200 px-4 py-3 flex flex-col sm:flex-row items-center justify-center gap-4">
+                    <span className="text-sm font-medium">Это черновик. Глава видна только администраторам.</span>
+                    <div className="flex gap-2">
+                        <Link href="/admin/book">
+                            <Button variant="outline" size="sm" className="h-8 border-yellow-300 hover:bg-yellow-200 dark:border-yellow-700 dark:hover:bg-yellow-900/50 text-yellow-900 dark:text-yellow-100">
+                                Назад
+                            </Button>
+                        </Link>
+                        <Link href={`/admin/edit/${chapter.id}`}>
+                            <Button variant="outline" size="sm" className="h-8 border-yellow-300 hover:bg-yellow-200 dark:border-yellow-700 dark:hover:bg-yellow-900/50 text-yellow-900 dark:text-yellow-100">
+                                Редактировать
+                            </Button>
+                        </Link>
+                    </div>
+                </div>
+            )}
 
             <article className="container mx-auto max-w-2xl py-16 px-4">
                 <header className="mb-12 text-center">

@@ -1,12 +1,22 @@
 [
   {
-    "id": "c924c8e3-262b-4058-93a7-61f152f257e4",
-    "title": "Глава",
-    "slug": "glava",
-    "content": "<img src=\"/uploads/763f584c-5ab2-4835-8461-cec79a9c6240.jpg\" width=\"406\" containerstyle=\"position: relative; width: 406px;\" wrapperstyle=\"display: flex;\"><p>текст</p>",
-    "excerpt": "<img src=\"/uploads/763f584c-5ab2-4835-8461-cec79a9c6240.jpg\" width=\"406\" containerstyle=\"position: relative; width: 406px;\" wrapperstyle=\"display: fle...",
+    "id": "913371a5-c72b-4bb1-a456-e79946ac749e",
+    "title": "глава 3",
+    "slug": "glava-3",
+    "content": "<p>афвавы</p>",
+    "excerpt": "афвавы...",
     "published": true,
-    "createdAt": "2025-11-24T08:48:27.579Z",
-    "updatedAt": "2025-11-24T08:52:19.070Z"
+    "createdAt": "2025-11-24T08:56:46.692Z",
+    "updatedAt": "2025-11-24T09:09:12.303Z"
+  },
+  {
+    "id": "a8cac107-2e41-4fbd-acfd-af19f286c74c",
+    "title": "Глава 1",
+    "slug": "glava-1",
+    "content": "<p>авыаы</p>",
+    "excerpt": "авыаы...",
+    "published": true,
+    "createdAt": "2025-11-24T09:09:33.162Z",
+    "updatedAt": "2025-11-24T09:09:43.703Z"
   }
 ]

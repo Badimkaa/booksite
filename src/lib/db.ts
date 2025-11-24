@@ -48,6 +48,28 @@ export async function saveChapter(chapter: Chapter): Promise<void> {
 
 export async function deleteChapter(id: string): Promise<void> {
     const chapters = await getChapters();
+    const chapterToDelete = chapters.find((c) => c.id === id);
+
+    if (chapterToDelete) {
+        // Extract image URLs from content
+        const imgRegex = /<img[^>]+src="([^">]+)"/g;
+        let match;
+        while ((match = imgRegex.exec(chapterToDelete.content)) !== null) {
+            const src = match[1];
+            if (src.startsWith('/uploads/')) {
+                const filename = src.split('/').pop();
+                if (filename) {
+                    const filepath = path.join(process.cwd(), 'public/uploads', filename);
+                    try {
+                        await fs.unlink(filepath);
+                    } catch (error) {
+                        console.error(`Failed to delete file: ${filepath}`, error);
+                    }
+                }
+            }
+        }
+    }
+
     const newChapters = chapters.filter((c) => c.id !== id);
     await fs.writeFile(chaptersFile, JSON.stringify(newChapters, null, 2));
 }
