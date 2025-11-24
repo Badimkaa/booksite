@@ -248,3 +248,40 @@ export async function getTestimonials(): Promise<Testimonial[]> {
         return [];
     }
 }
+
+const usersFile = path.join(dataDirectory, 'users.json');
+import { User } from '@/types';
+
+export async function getUsers(): Promise<User[]> {
+    await ensureDataDirectory();
+    try {
+        const fileContent = await fs.readFile(usersFile, 'utf8');
+        return JSON.parse(fileContent);
+    } catch (error) {
+        return [];
+    }
+}
+
+export async function getUserByUsername(username: string): Promise<User | undefined> {
+    const users = await getUsers();
+    return users.find((user) => user.username === username);
+}
+
+export async function saveUser(user: User): Promise<void> {
+    const users = await getUsers();
+    const existingIndex = users.findIndex((u) => u.id === user.id);
+
+    if (existingIndex >= 0) {
+        users[existingIndex] = user;
+    } else {
+        users.push(user);
+    }
+
+    await fs.writeFile(usersFile, JSON.stringify(users, null, 2));
+}
+
+export async function deleteUser(id: string): Promise<void> {
+    const users = await getUsers();
+    const newUsers = users.filter((u) => u.id !== id);
+    await fs.writeFile(usersFile, JSON.stringify(newUsers, null, 2));
+}

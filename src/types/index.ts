@@ -39,3 +39,13 @@ export interface Testimonial {
     program?: string;
     avatar?: string;
 }
+
+export type UserRole = 'SUPER_ADMIN' | 'EDITOR';
+
+export interface User {
+    id: string;
+    username: string;
+    passwordHash: string;
+    role: UserRole;
+    createdAt: string;
+}
