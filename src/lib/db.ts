@@ -74,6 +74,29 @@ export async function deleteChapter(id: string): Promise<void> {
     await fs.writeFile(chaptersFile, JSON.stringify(newChapters, null, 2));
 }
 
+export async function reorderChapters(orderedIds: string[]): Promise<void> {
+    const chapters = await getChapters();
+    const chapterMap = new Map(chapters.map((c) => [c.id, c]));
+
+    const newChapters: Chapter[] = [];
+
+    // Add chapters in the new order
+    for (const id of orderedIds) {
+        const chapter = chapterMap.get(id);
+        if (chapter) {
+            newChapters.push(chapter);
+            chapterMap.delete(id);
+        }
+    }
+
+    // Append any remaining chapters (safety fallback)
+    for (const chapter of chapterMap.values()) {
+        newChapters.push(chapter);
+    }
+
+    await fs.writeFile(chaptersFile, JSON.stringify(newChapters, null, 2));
+}
+
 const settingsFile = path.join(dataDirectory, 'settings.json');
 
 export interface SiteSettings {

@@ -1,15 +1,5 @@
 [
   {
-    "id": "913371a5-c72b-4bb1-a456-e79946ac749e",
-    "title": "глава 3",
-    "slug": "glava-3",
-    "content": "<p>афвавы</p>",
-    "excerpt": "афвавы...",
-    "published": true,
-    "createdAt": "2025-11-24T08:56:46.692Z",
-    "updatedAt": "2025-11-24T09:09:12.303Z"
-  },
-  {
     "id": "a8cac107-2e41-4fbd-acfd-af19f286c74c",
     "title": "Глава 1",
     "slug": "glava-1",
@@ -18,5 +8,25 @@
     "published": true,
     "createdAt": "2025-11-24T09:09:33.162Z",
     "updatedAt": "2025-11-24T09:09:43.703Z"
+  },
+  {
+    "id": "913371a5-c72b-4bb1-a456-e79946ac749e",
+    "title": "глава 3",
+    "slug": "glava-3",
+    "content": "<p>афвавы</p>",
+    "excerpt": "афвавы...",
+    "published": true,
+    "createdAt": "2025-11-24T08:56:46.692Z",
+    "updatedAt": "2025-11-24T09:20:43.778Z"
+  },
+  {
+    "id": "e79f822f-942d-4305-81f5-7185b1eec19a",
+    "title": "Глава 8",
+    "slug": "glava-8",
+    "content": "<p>Однажды утром</p>",
+    "excerpt": "Однажды утром...",
+    "published": true,
+    "createdAt": "2025-11-24T09:23:19.203Z",
+    "updatedAt": "2025-11-24T09:25:59.449Z"
   }
 ]
