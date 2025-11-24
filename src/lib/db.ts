@@ -76,3 +76,96 @@ export async function saveSettings(settings: SiteSettings): Promise<void> {
     await ensureDataDirectory();
     await fs.writeFile(settingsFile, JSON.stringify(settings, null, 2));
 }
+
+const coursesFile = path.join(dataDirectory, 'courses.json');
+const scheduleFile = path.join(dataDirectory, 'schedule.json');
+
+import { Course, ScheduleEvent } from '@/types';
+
+export async function getCourses(): Promise<Course[]> {
+    await ensureDataDirectory();
+    try {
+        const fileContent = await fs.readFile(coursesFile, 'utf8');
+        return JSON.parse(fileContent);
+    } catch (error) {
+        return [];
+    }
+}
+
+export async function getCourse(slug: string): Promise<Course | undefined> {
+    const courses = await getCourses();
+    return courses.find((course) => course.slug === slug);
+}
+
+export async function getSchedule(): Promise<ScheduleEvent[]> {
+    await ensureDataDirectory();
+    try {
+        const fileContent = await fs.readFile(scheduleFile, 'utf8');
+        // Sort by date
+        const events: ScheduleEvent[] = JSON.parse(fileContent);
+        return events.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+    } catch (error) {
+        return [];
+    }
+}
+
+export async function saveCourse(course: Course): Promise<void> {
+    const courses = await getCourses();
+    const existingIndex = courses.findIndex((c) => c.id === course.id);
+
+    if (existingIndex >= 0) {
+        courses[existingIndex] = course;
+    } else {
+        courses.push(course);
+    }
+
+    await fs.writeFile(coursesFile, JSON.stringify(courses, null, 2));
+}
+
+export async function deleteCourse(id: string): Promise<void> {
+    const courses = await getCourses();
+    const newCourses = courses.filter((c) => c.id !== id);
+    await fs.writeFile(coursesFile, JSON.stringify(newCourses, null, 2));
+}
+
+export async function getCourseById(id: string): Promise<Course | undefined> {
+    const courses = await getCourses();
+    return courses.find((course) => course.id === id);
+}
+
+export async function saveScheduleEvent(event: ScheduleEvent): Promise<void> {
+    const schedule = await getSchedule();
+    const existingIndex = schedule.findIndex((e) => e.id === event.id);
+
+    if (existingIndex >= 0) {
+        schedule[existingIndex] = event;
+    } else {
+        schedule.push(event);
+    }
+
+    await fs.writeFile(scheduleFile, JSON.stringify(schedule, null, 2));
+}
+
+export async function deleteScheduleEvent(id: string): Promise<void> {
+    const schedule = await getSchedule();
+    const newSchedule = schedule.filter((e) => e.id !== id);
+    await fs.writeFile(scheduleFile, JSON.stringify(newSchedule, null, 2));
+}
+
+export async function getScheduleEventById(id: string): Promise<ScheduleEvent | undefined> {
+    const schedule = await getSchedule();
+    return schedule.find((event) => event.id === id);
+}
+
+const testimonialsFile = path.join(dataDirectory, 'testimonials.json');
+import { Testimonial } from '@/types';
+
+export async function getTestimonials(): Promise<Testimonial[]> {
+    await ensureDataDirectory();
+    try {
+        const fileContent = await fs.readFile(testimonialsFile, 'utf8');
+        return JSON.parse(fileContent);
+    } catch (error) {
+        return [];
+    }
+}

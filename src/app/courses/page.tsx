@@ -1,0 +1,63 @@
+import Link from 'next/link';
+import { getCourses } from '@/lib/db';
+import { Button } from '@/components/ui/Button';
+import { ArrowRight, CheckCircle2 } from 'lucide-react';
+
+export const dynamic = 'force-dynamic';
+
+export default async function CoursesPage() {
+    const courses = await getCourses();
+
+    return (
+        <div className="min-h-screen bg-background font-serif py-16 md:py-24">
+            <div className="container mx-auto px-4">
+                <header className="text-center max-w-3xl mx-auto mb-16">
+                    <h1 className="text-4xl md:text-5xl font-bold mb-6">Мои Курсы</h1>
+                    <p className="text-xl text-muted-foreground leading-relaxed">
+                        Программы, созданные с любовью и заботой о вашем здоровье.
+                        Выберите то, что откликается вам сейчас.
+                    </p>
+                </header>
+
+                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    {courses.map((course) => (
+                        <div key={course.id} className="flex flex-col bg-card rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-shadow border">
+                            <div className="aspect-video bg-muted relative">
+                                {/* Placeholder for course image */}
+                                <div className="absolute inset-0 flex items-center justify-center text-muted-foreground bg-secondary/10">
+                                    Image
+                                </div>
+                            </div>
+                            <div className="p-8 flex flex-col flex-1">
+                                <h2 className="text-2xl font-bold mb-3">{course.title}</h2>
+                                <p className="text-muted-foreground mb-6 line-clamp-3">
+                                    {course.description}
+                                </p>
+
+                                <div className="mt-auto space-y-6">
+                                    <ul className="space-y-2">
+                                        {course.features.slice(0, 3).map((feature, i) => (
+                                            <li key={i} className="flex items-start gap-2 text-sm text-muted-foreground">
+                                                <CheckCircle2 className="h-4 w-4 text-primary shrink-0 mt-0.5" />
+                                                <span>{feature}</span>
+                                            </li>
+                                        ))}
+                                    </ul>
+
+                                    <div className="flex items-center justify-between pt-4 border-t">
+                                        <span className="text-xl font-bold">{course.price} ₽</span>
+                                        <Link href={`/courses/${course.slug}`}>
+                                            <Button>
+                                                Подробнее <ArrowRight className="ml-2 h-4 w-4" />
+                                            </Button>
+                                        </Link>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            </div>
+        </div>
+    );
+}

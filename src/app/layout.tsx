@@ -2,6 +2,9 @@ import type { Metadata } from "next";
 import { Inter, Merriweather } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
+import { Header } from "@/components/Header";
+import { Footer } from "@/components/Footer";
+import { getSettings } from "@/lib/db";
 
 const inter = Inter({
   subsets: ["latin", "cyrillic"],
@@ -13,8 +16,6 @@ const merriweather = Merriweather({
   subsets: ["latin", "cyrillic"],
   variable: "--font-merriweather",
 });
-
-import { getSettings } from "@/lib/db";
 
 export async function generateMetadata() {
   const settings = await getSettings();
@@ -33,12 +34,16 @@ export default function RootLayout({
     <html lang="ru" suppressHydrationWarning>
       <body
         className={cn(
-          "min-h-screen bg-background font-sans antialiased",
+          "min-h-screen bg-background font-sans antialiased flex flex-col",
           inter.variable,
           merriweather.variable
         )}
       >
-        {children}
+        <Header />
+        <main className="flex-1">
+          {children}
+        </main>
+        <Footer />
       </body>
     </html>
   );

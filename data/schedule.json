@@ -1,0 +1,29 @@
+[
+    {
+        "id": "1",
+        "title": "Женский круг: Сила рода",
+        "date": "2023-11-15T18:00:00",
+        "type": "offline",
+        "location": "Москва, Студия 'Дыхание'",
+        "link": "https://t.me/username",
+        "price": 2000
+    },
+    {
+        "id": "2",
+        "title": "Вебинар: Психосоматика женских болезней",
+        "date": "2023-11-20T19:00:00",
+        "type": "online",
+        "location": "Zoom",
+        "link": "https://zoom.us/j/123456789",
+        "price": 1000
+    },
+    {
+        "id": "3",
+        "title": "Ретрит: Возвращение к себе",
+        "date": "2023-12-01T10:00:00",
+        "type": "offline",
+        "location": "Подмосковье",
+        "link": "https://t.me/username",
+        "price": 15000
+    }
+]
