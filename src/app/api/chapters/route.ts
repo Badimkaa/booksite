@@ -2,8 +2,14 @@ import { NextResponse } from 'next/server';
 import { getChapters, saveChapter, deleteChapter } from '@/lib/db';
 import { Chapter } from '@/types';
 import { v4 as uuidv4 } from 'uuid';
+import { cookies } from 'next/headers';
+import { jwtVerify } from 'jose';
 
 import { slugify } from 'transliteration';
+
+const JWT_SECRET = new TextEncoder().encode(
+    process.env.JWT_SECRET || 'default-secret-change-me'
+);
 
 export async function GET() {
     const chapters = await getChapters();
@@ -13,6 +19,20 @@ export async function GET() {
 export async function POST(request: Request) {
     const body = await request.json();
     const { id, title, content, published, excerpt } = body;
+
+    // Get current user
+    const cookieStore = await cookies();
+    const token = cookieStore.get('auth_token')?.value;
+    let username = 'Unknown';
+
+    if (token) {
+        try {
+            const { payload } = await jwtVerify(token, JWT_SECRET);
+            username = payload.username as string;
+        } catch (e) {
+            console.error('Token verification failed', e);
+        }
+    }
 
     // Transliterate title to English slug
     const slug = slugify(title);
@@ -26,6 +46,7 @@ export async function POST(request: Request) {
         published: published || false,
         createdAt: body.createdAt || new Date().toISOString(),
         updatedAt: new Date().toISOString(),
+        lastModifiedBy: username,
     };
 
     await saveChapter(chapter);

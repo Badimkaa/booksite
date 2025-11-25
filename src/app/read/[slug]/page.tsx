@@ -5,6 +5,7 @@ import { getChapter, getChapters } from '@/lib/db';
 import { Button } from '@/components/ui/Button';
 import { ChevronLeft, ChevronRight, Home } from 'lucide-react';
 import ProgressSaver from '@/components/book/ProgressSaver';
+import ViewCounter from '@/components/book/ViewCounter';
 
 interface ReadPageProps {
     params: Promise<{
@@ -16,6 +17,10 @@ export default async function ReadPage({ params }: ReadPageProps) {
     const { slug } = await params;
     const decodedSlug = decodeURIComponent(slug);
     const chapter = await getChapter(decodedSlug);
+
+    // if (chapter) {
+    //     await incrementChapterViews(chapter.id);
+    // }
 
     const cookieStore = await cookies();
     const isAuthenticated = cookieStore.get('auth_token')?.value === 'authenticated';
@@ -33,7 +38,7 @@ export default async function ReadPage({ params }: ReadPageProps) {
 
     return (
         <div className="min-h-screen bg-background font-serif">
-            <nav className="sticky top-0 z-10 bg-background/80 backdrop-blur-sm border-b px-4 py-3">
+            <nav className="sticky top-[57px] md:top-[53px] z-10 bg-background/80 backdrop-blur-sm border-b px-4 py-3">
                 <div className="container mx-auto max-w-3xl flex items-center justify-between">
                     <Link href="/">
                         <Button variant="ghost" size="sm">
@@ -83,6 +88,7 @@ export default async function ReadPage({ params }: ReadPageProps) {
 
             <article className="container mx-auto max-w-2xl py-16 px-4">
                 <ProgressSaver slug={decodedSlug} title={chapter.title} />
+                <ViewCounter chapterId={chapter.id} />
                 <header className="mb-12 text-center">
                     <h1 className="text-4xl md:text-5xl font-bold mb-4">{chapter.title}</h1>
                     <div className="text-muted-foreground font-sans text-sm">

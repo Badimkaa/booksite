@@ -1,0 +1,26 @@
+[
+  {
+    "id": "5babdc9b-b04d-4f6a-b27e-1028f33ff14c",
+    "courseId": "1",
+    "amount": 50000,
+    "status": "pending",
+    "createdAt": "2025-11-25T01:16:42.166Z",
+    "updatedAt": "2025-11-25T01:16:42.166Z"
+  },
+  {
+    "id": "ffd8bb07-5d5b-4750-b61c-b3a9065f71b0",
+    "courseId": "3",
+    "amount": 4500,
+    "status": "pending",
+    "createdAt": "2025-11-25T03:14:27.894Z",
+    "updatedAt": "2025-11-25T03:14:27.894Z"
+  },
+  {
+    "id": "86110d97-7729-47ec-a998-80c3c00b1d2b",
+    "courseId": "3",
+    "amount": 4500,
+    "status": "pending",
+    "createdAt": "2025-11-25T03:15:20.775Z",
+    "updatedAt": "2025-11-25T03:15:20.775Z"
+  }
+]

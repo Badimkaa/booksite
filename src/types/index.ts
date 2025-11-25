@@ -9,15 +9,18 @@ export interface Chapter {
     updatedAt: string;
     videoUrl?: string;
     telegramLink?: string;
+    views?: number;
+    lastModifiedBy?: string;
 }
 
 export interface Course {
     id: string;
     title: string;
     description: string;
-    price: number;
+    price?: number;
     slug: string;
     image: string;
+    accessContent?: string; // Link or message to show after payment
     features: string[];
 }
 

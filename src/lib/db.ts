@@ -108,6 +108,16 @@ export async function deleteChapter(id: string): Promise<void> {
     await fs.writeFile(chaptersFile, JSON.stringify(newChapters, null, 2));
 }
 
+export async function incrementChapterViews(id: string): Promise<void> {
+    const chapters = await getChapters();
+    const chapter = chapters.find((c) => c.id === id);
+
+    if (chapter) {
+        chapter.views = (chapter.views || 0) + 1;
+        await fs.writeFile(chaptersFile, JSON.stringify(chapters, null, 2));
+    }
+}
+
 export async function reorderChapters(orderedIds: string[]): Promise<void> {
     const chapters = await getChapters();
     const chapterMap = new Map(chapters.map((c) => [c.id, c]));

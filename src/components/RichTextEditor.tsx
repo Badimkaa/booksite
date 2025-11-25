@@ -112,8 +112,8 @@ export function RichTextEditor({ content, onChange, placeholder, className }: Ri
     }
 
     return (
-        <div className="border rounded-md bg-background">
-            <div className="border-b p-2 flex flex-wrap gap-1 bg-muted/30">
+        <div className="border rounded-md bg-background relative">
+            <div className="sticky top-16 z-40 border-b p-2 flex flex-wrap gap-1 bg-muted/80 backdrop-blur-md">
                 <Button
                     type="button"
                     variant="ghost"

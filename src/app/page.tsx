@@ -90,10 +90,18 @@ export default async function Home() {
             {courses.slice(0, 3).map((course) => (
               <div key={course.id} className="bg-card rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow border">
                 <div className="aspect-video bg-muted relative">
-                  {/* Placeholder for course image */}
-                  <div className="absolute inset-0 flex items-center justify-center text-muted-foreground bg-secondary/10">
-                    Image
-                  </div>
+                  {course.image ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={course.image}
+                      alt={course.title}
+                      className="absolute inset-0 w-full h-full object-cover"
+                    />
+                  ) : (
+                    <div className="absolute inset-0 flex items-center justify-center text-muted-foreground bg-secondary/10">
+                      Image
+                    </div>
+                  )}
                 </div>
                 <div className="p-6 flex flex-col h-full">
                   <h3 className="text-xl font-bold mb-2 font-serif">{course.title}</h3>

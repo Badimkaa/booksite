@@ -1,12 +1,13 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Chapter } from '@/types';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { Loader2 } from 'lucide-react';
 import { RichTextEditor } from './RichTextEditor';
+import { useNavigationBlocker } from '@/hooks/use-navigation-blocker';
 
 interface ChapterEditorProps {
     chapter?: Chapter;
@@ -19,6 +20,39 @@ export function ChapterEditor({ chapter }: ChapterEditorProps) {
     const [excerpt, setExcerpt] = useState(chapter?.excerpt || '');
     const [content, setContent] = useState(chapter?.content || '');
     const [published, setPublished] = useState(chapter?.published || false);
+    const [isDirty, setIsDirty] = useState(false);
+
+    // Use custom navigation blocker
+    useNavigationBlocker(isDirty);
+
+    // Check for unsaved changes
+    useEffect(() => {
+        const initialTitle = chapter?.title || '';
+        const initialExcerpt = chapter?.excerpt || '';
+        const initialContent = chapter?.content || '';
+        const initialPublished = chapter?.published || false;
+
+        const hasChanges =
+            title !== initialTitle ||
+            excerpt !== initialExcerpt ||
+            content !== initialContent ||
+            published !== initialPublished;
+
+        setIsDirty(hasChanges);
+    }, [title, excerpt, content, published, chapter]);
+
+    // Warn on exit (browser refresh/close)
+    useEffect(() => {
+        const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+            if (isDirty) {
+                e.preventDefault();
+                e.returnValue = '';
+            }
+        };
+
+        window.addEventListener('beforeunload', handleBeforeUnload);
+        return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+    }, [isDirty]);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -73,9 +107,16 @@ export function ChapterEditor({ chapter }: ChapterEditorProps) {
 
     return (
         <div className="space-y-6 max-w-4xl mx-auto py-10 px-4">
-            <h1 className="text-2xl font-bold font-serif">
-                {chapter ? 'Редактирование главы' : 'Новая глава'}
-            </h1>
+            <div className="flex items-center justify-between">
+                <h1 className="text-2xl font-bold font-serif">
+                    {chapter ? 'Редактирование главы' : 'Новая глава'}
+                </h1>
+                {isDirty && (
+                    <span className="bg-yellow-100 text-yellow-800 text-xs font-medium px-2.5 py-0.5 rounded border border-yellow-200 animate-pulse">
+                        Не сохранено
+                    </span>
+                )}
+            </div>
 
             <form onSubmit={handleSubmit} className="space-y-4">
                 <div>

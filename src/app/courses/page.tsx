@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { getCourses } from '@/lib/db';
 import { Button } from '@/components/ui/Button';
 import { ArrowRight, CheckCircle2 } from 'lucide-react';
+import { initiatePayment } from '@/app/actions/payment';
 
 export const dynamic = 'force-dynamic';
 
@@ -23,10 +24,18 @@ export default async function CoursesPage() {
                     {courses.map((course) => (
                         <div key={course.id} className="flex flex-col bg-card rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-shadow border">
                             <div className="aspect-video bg-muted relative">
-                                {/* Placeholder for course image */}
-                                <div className="absolute inset-0 flex items-center justify-center text-muted-foreground bg-secondary/10">
-                                    Image
-                                </div>
+                                {course.image ? (
+                                    // eslint-disable-next-line @next/next/no-img-element
+                                    <img
+                                        src={course.image}
+                                        alt={course.title}
+                                        className="absolute inset-0 w-full h-full object-cover"
+                                    />
+                                ) : (
+                                    <div className="absolute inset-0 flex items-center justify-center text-muted-foreground bg-secondary/10">
+                                        Image
+                                    </div>
+                                )}
                             </div>
                             <div className="p-8 flex flex-col flex-1">
                                 <h2 className="text-2xl font-bold mb-3">{course.title}</h2>
@@ -44,13 +53,23 @@ export default async function CoursesPage() {
                                         ))}
                                     </ul>
 
-                                    <div className="flex items-center justify-between pt-4 border-t">
-                                        <span className="text-xl font-bold">{course.price} ₽</span>
-                                        <Link href={`/courses/${course.slug}`}>
-                                            <Button>
-                                                Подробнее <ArrowRight className="ml-2 h-4 w-4" />
-                                            </Button>
-                                        </Link>
+                                    <div className="pt-4 border-t">
+                                        {course.price ? (
+                                            <div className="flex items-center gap-4 w-full">
+                                                <div className="font-bold text-lg">
+                                                    {course.price.toLocaleString('ru-RU')} ₽
+                                                </div>
+                                                <form action={initiatePayment.bind(null, course.id)} className="ml-auto">
+                                                    <Button type="submit" size="sm">
+                                                        Купить
+                                                    </Button>
+                                                </form>
+                                            </div>
+                                        ) : (
+                                            <span className="text-muted-foreground text-sm">
+                                                Бесплатно / Скоро
+                                            </span>
+                                        )}
                                     </div>
                                 </div>
                             </div>

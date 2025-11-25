@@ -34,5 +34,14 @@
     "location": "example.com",
     "link": "",
     "price": 20000
+  },
+  {
+    "id": "5bed47d1-35fc-4c16-8649-f094302c6215",
+    "title": "Обучение медитации",
+    "date": "2025-11-28T12:13",
+    "type": "online",
+    "location": "example.com",
+    "link": "",
+    "price": 2000
   }
 ]

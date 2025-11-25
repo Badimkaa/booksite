@@ -3,7 +3,9 @@ import { getCourseById, saveCourse, deleteCourse } from '@/lib/db';
 import { Button } from '@/components/ui/Button';
 import { Course } from '@/types';
 import { v4 as uuidv4 } from 'uuid';
-import { ArrowLeft, Save, Trash2 } from 'lucide-react';
+import { ArrowLeft, Save, Trash2, Upload } from 'lucide-react';
+import { writeFile, unlink } from 'fs/promises';
+import path from 'path';
 
 interface CourseEditorProps {
     params: Promise<{
@@ -38,9 +40,33 @@ export default async function CourseEditorPage({ params }: CourseEditorProps) {
 
         const title = formData.get('title') as string;
         const description = formData.get('description') as string;
-        const price = Number(formData.get('price'));
+        const price = formData.get('price') ? Number(formData.get('price')) : undefined;
         const slug = formData.get('slug') as string;
+        const accessContent = formData.get('accessContent') as string;
         const featuresString = formData.get('features') as string;
+        const imageFile = formData.get('image') as File;
+
+        let imagePath = course?.image;
+
+        if (imageFile && imageFile.size > 0) {
+            // Delete old image if exists
+            if (course.image && course.image.startsWith('/uploads/')) {
+                try {
+                    const oldFilename = course.image.replace('/uploads/', '');
+                    const oldFilepath = path.join(process.cwd(), 'public/uploads', oldFilename);
+                    await unlink(oldFilepath);
+                } catch (error) {
+                    console.error('Error deleting old image:', error);
+                }
+            }
+
+            const buffer = Buffer.from(await imageFile.arrayBuffer());
+            const filename = `${uuidv4()}${path.extname(imageFile.name)}`;
+            const uploadDir = path.join(process.cwd(), 'public/uploads');
+            const filepath = path.join(uploadDir, filename);
+            await writeFile(filepath, buffer);
+            imagePath = `/uploads/${filename}`;
+        }
 
         const newCourse: Course = {
             id: isNew ? uuidv4() : id,
@@ -48,8 +74,11 @@ export default async function CourseEditorPage({ params }: CourseEditorProps) {
             description,
             price,
             slug,
-            image: '', // Placeholder
-            features: featuresString.split('\n').filter(f => f.trim() !== '')
+            image: imagePath,
+            features: featuresString.split('\n').filter(f => f.trim() !== ''),
+            accessContent,
+            createdAt: course?.createdAt || new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
         };
 
         await saveCourse(newCourse);
@@ -110,6 +139,25 @@ export default async function CourseEditorPage({ params }: CourseEditorProps) {
                             required
                             className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                         />
+                    </div>
+
+                    <div className="grid gap-2">
+                        <label htmlFor="image" className="font-medium">Изображение курса</label>
+                        <div className="flex items-center gap-4">
+                            {course.image && (
+                                <div className="relative w-24 h-16 rounded overflow-hidden border bg-muted">
+                                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                                    <img src={course.image} alt="Preview" className="object-cover w-full h-full" />
+                                </div>
+                            )}
+                            <input
+                                type="file"
+                                id="image"
+                                name="image"
+                                accept="image/*"
+                                className="flex w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                            />
+                        </div>
                     </div>
 
                     <div className="grid gap-2">
