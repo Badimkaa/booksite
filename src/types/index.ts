@@ -63,3 +63,13 @@ export interface Comment {
     content: string;
     createdAt: string;
 }
+
+export interface Registration {
+    id: string;
+    eventId: string;
+    eventTitle: string;
+    name: string;
+    contact: string;
+    message?: string;
+    createdAt: string;
+}

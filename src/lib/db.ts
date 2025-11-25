@@ -335,3 +335,31 @@ export async function deleteComment(id: string): Promise<void> {
         // Ignore
     }
 }
+
+const registrationsFile = path.join(dataDirectory, 'registrations.json');
+import { Registration } from '@/types';
+
+export async function saveRegistration(registration: Registration): Promise<void> {
+    await ensureDataDirectory();
+    let registrations: Registration[] = [];
+    try {
+        const fileContent = await fs.readFile(registrationsFile, 'utf8');
+        registrations = JSON.parse(fileContent);
+    } catch (error) {
+        // File doesn't exist or is empty
+    }
+
+    registrations.push(registration);
+    await fs.writeFile(registrationsFile, JSON.stringify(registrations, null, 2));
+}
+
+export async function getRegistrations(): Promise<Registration[]> {
+    await ensureDataDirectory();
+    try {
+        const fileContent = await fs.readFile(registrationsFile, 'utf8');
+        const registrations: Registration[] = JSON.parse(fileContent);
+        return registrations.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+    } catch (error) {
+        return [];
+    }
+}

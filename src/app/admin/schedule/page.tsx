@@ -26,41 +26,98 @@ export default async function ScheduleAdminPage() {
                         Нет запланированных событий. Создайте первое!
                     </div>
                 ) : (
-                    schedule.map((event) => (
-                        <div
-                            key={event.id}
-                            className="flex items-center justify-between p-4 border rounded-lg bg-card hover:shadow-sm transition-shadow"
-                        >
-                            <div className="flex items-start gap-4">
-                                <div className="flex flex-col items-center justify-center bg-muted/20 rounded-lg p-2 min-w-[60px] text-center">
-                                    <span className="text-xl font-bold">
-                                        {new Date(event.date).getDate()}
-                                    </span>
-                                    <span className="text-xs uppercase text-muted-foreground">
-                                        {new Date(event.date).toLocaleDateString('ru-RU', { month: 'short' })}
-                                    </span>
+                    <>
+                        {/* Upcoming Events */}
+                        <div className="space-y-4">
+                            <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
+                                <Calendar className="h-5 w-5 text-primary" />
+                                Предстоящие события
+                            </h2>
+                            {schedule.filter(e => new Date(e.date) > new Date()).length === 0 ? (
+                                <div className="text-muted-foreground italic p-4 border border-dashed rounded-lg">
+                                    Нет предстоящих событий
                                 </div>
-                                <div>
-                                    <h3 className="font-semibold text-lg">{event.title}</h3>
-                                    <div className="flex items-center gap-3 text-sm text-muted-foreground mt-1">
-                                        <span className="flex items-center gap-1">
-                                            {event.type === 'online' ? <Video className="h-3 w-3" /> : <MapPin className="h-3 w-3" />}
-                                            {event.type === 'online' ? 'Онлайн' : 'Оффлайн'}
-                                        </span>
-                                        <span>•</span>
-                                        <span>{new Date(event.date).toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' })}</span>
+                            ) : (
+                                schedule.filter(e => new Date(e.date) > new Date()).map((event) => (
+                                    <div
+                                        key={event.id}
+                                        className="flex items-center justify-between p-4 border rounded-lg bg-card hover:shadow-sm transition-shadow border-primary/20"
+                                    >
+                                        <div className="flex items-start gap-4">
+                                            <div className="flex flex-col items-center justify-center bg-primary/10 rounded-lg p-2 min-w-[60px] text-center">
+                                                <span className="text-xl font-bold text-primary">
+                                                    {new Date(event.date).getDate()}
+                                                </span>
+                                                <span className="text-xs uppercase text-muted-foreground">
+                                                    {new Date(event.date).toLocaleDateString('ru-RU', { month: 'short' })}
+                                                </span>
+                                            </div>
+                                            <div>
+                                                <h3 className="font-semibold text-lg">{event.title}</h3>
+                                                <div className="flex items-center gap-3 text-sm text-muted-foreground mt-1">
+                                                    <span className="flex items-center gap-1">
+                                                        {event.type === 'online' ? <Video className="h-3 w-3" /> : <MapPin className="h-3 w-3" />}
+                                                        {event.type === 'online' ? 'Онлайн' : 'Оффлайн'}
+                                                    </span>
+                                                    <span>•</span>
+                                                    <span>{new Date(event.date).toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' })}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div className="flex gap-2">
+                                            <Link href={`/admin/schedule/${event.id}`}>
+                                                <Button variant="outline" size="icon" title="Редактировать">
+                                                    <Edit className="h-4 w-4" />
+                                                </Button>
+                                            </Link>
+                                        </div>
                                     </div>
-                                </div>
-                            </div>
-                            <div className="flex gap-2">
-                                <Link href={`/admin/schedule/${event.id}`}>
-                                    <Button variant="outline" size="icon" title="Редактировать">
-                                        <Edit className="h-4 w-4" />
-                                    </Button>
-                                </Link>
-                            </div>
+                                ))
+                            )}
                         </div>
-                    ))
+
+                        {/* Past Events */}
+                        {schedule.filter(e => new Date(e.date) <= new Date()).length > 0 && (
+                            <div className="space-y-4 pt-8 border-t">
+                                <h2 className="text-xl font-bold mb-4 text-muted-foreground">Прошедшие события</h2>
+                                {schedule.filter(e => new Date(e.date) <= new Date()).map((event) => (
+                                    <div
+                                        key={event.id}
+                                        className="flex items-center justify-between p-4 border rounded-lg bg-muted/10 opacity-70 hover:opacity-100 transition-opacity"
+                                    >
+                                        <div className="flex items-start gap-4">
+                                            <div className="flex flex-col items-center justify-center bg-muted/20 rounded-lg p-2 min-w-[60px] text-center grayscale">
+                                                <span className="text-xl font-bold text-muted-foreground">
+                                                    {new Date(event.date).getDate()}
+                                                </span>
+                                                <span className="text-xs uppercase text-muted-foreground">
+                                                    {new Date(event.date).toLocaleDateString('ru-RU', { month: 'short' })}
+                                                </span>
+                                            </div>
+                                            <div>
+                                                <h3 className="font-semibold text-lg text-muted-foreground">{event.title}</h3>
+                                                <div className="flex items-center gap-3 text-sm text-muted-foreground mt-1">
+                                                    <span className="flex items-center gap-1">
+                                                        {event.type === 'online' ? <Video className="h-3 w-3" /> : <MapPin className="h-3 w-3" />}
+                                                        {event.type === 'online' ? 'Онлайн' : 'Оффлайн'}
+                                                    </span>
+                                                    <span>•</span>
+                                                    <span>{new Date(event.date).toLocaleDateString('ru-RU')}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div className="flex gap-2">
+                                            <Link href={`/admin/schedule/${event.id}`}>
+                                                <Button variant="ghost" size="icon" title="Редактировать">
+                                                    <Edit className="h-4 w-4" />
+                                                </Button>
+                                            </Link>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+                    </>
                 )}
             </div>
         </div>

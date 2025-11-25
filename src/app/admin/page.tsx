@@ -73,6 +73,15 @@ export default async function AdminDashboard() {
             href: "/admin/schedule",
             color: "text-green-500",
             bg: "bg-green-500/10"
+        },
+        {
+            title: "Заявки",
+            value: (await import('@/lib/db').then(m => m.getRegistrations())).length,
+            label: "новых",
+            icon: Users, // Using Users icon for now, or could import Mail/Inbox
+            href: "/admin/registrations",
+            color: "text-pink-500",
+            bg: "bg-pink-500/10"
         }
     ];
 
