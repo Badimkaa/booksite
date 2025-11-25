@@ -1,9 +1,10 @@
 import { notFound, redirect } from 'next/navigation';
+import Link from 'next/link';
 import { getCourseById, saveCourse, deleteCourse } from '@/lib/db';
 import { Button } from '@/components/ui/Button';
 import { Course } from '@/types';
 import { v4 as uuidv4 } from 'uuid';
-import { ArrowLeft, Save, Trash2, Upload } from 'lucide-react';
+import { ArrowLeft, Save, Trash2 } from 'lucide-react';
 import { writeFile, unlink } from 'fs/promises';
 import path from 'path';
 
@@ -224,4 +225,3 @@ export default async function CourseEditorPage({ params }: CourseEditorProps) {
         </div>
     );
 }
-import Link from 'next/link';
