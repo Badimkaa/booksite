@@ -286,5 +286,21 @@
     "status": "pending",
     "createdAt": "2025-11-25T04:52:39.696Z",
     "updatedAt": "2025-11-25T04:52:39.696Z"
+  },
+  {
+    "id": "cab90bf3-bb6f-4168-aac5-12d676234673",
+    "courseId": "25199e0e-7699-4820-b911-c8da34cc70b0",
+    "amount": 10000,
+    "status": "pending",
+    "createdAt": "2025-11-25T07:59:15.258Z",
+    "updatedAt": "2025-11-25T07:59:15.258Z"
+  },
+  {
+    "id": "fb61fb64-5ffe-42d6-9936-2ac9c0fa7a0a",
+    "courseId": "1",
+    "amount": 120,
+    "status": "pending",
+    "createdAt": "2025-11-25T08:07:17.128Z",
+    "updatedAt": "2025-11-25T08:07:17.128Z"
   }
 ]
