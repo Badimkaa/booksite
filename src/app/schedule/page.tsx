@@ -1,6 +1,7 @@
 import { getSchedule } from '@/lib/db';
 import { Button } from '@/components/ui/Button';
 import { Calendar, MapPin, Video, Clock } from 'lucide-react';
+import { formatDate } from '@/lib/utils';
 
 export const dynamic = 'force-dynamic';
 
@@ -92,7 +93,7 @@ export default async function SchedulePage() {
                                 <div key={event.id} className="flex items-center justify-between p-4 border rounded-xl bg-muted/10">
                                     <div className="flex items-center gap-4">
                                         <div className="text-sm font-medium text-muted-foreground">
-                                            {new Date(event.date).toLocaleDateString('ru-RU')}
+                                            {formatDate(event.date)}
                                         </div>
                                         <div className="font-medium">{event.title}</div>
                                     </div>

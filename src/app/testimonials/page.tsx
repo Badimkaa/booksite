@@ -1,5 +1,6 @@
 import { getTestimonials } from '@/lib/db';
 import { Quote } from 'lucide-react';
+import { formatDate } from '@/lib/utils';
 
 export const dynamic = 'force-dynamic';
 
@@ -33,7 +34,7 @@ export default async function TestimonialsPage() {
                                 "{testimonial.text}"
                             </p>
                             <div className="mt-4 text-xs text-muted-foreground text-right">
-                                {new Date(testimonial.date).toLocaleDateString('ru-RU')}
+                                {formatDate(testimonial.date)}
                             </div>
                         </div>
                     ))}

@@ -2,10 +2,13 @@ import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { cookies } from 'next/headers';
 import { getChapter, getChapters } from '@/lib/db';
+import { isAuthenticated } from '@/lib/auth';
+import { formatDate } from '@/lib/utils';
 import { Button } from '@/components/ui/Button';
 import { ChevronLeft, ChevronRight, Home } from 'lucide-react';
 import ProgressSaver from '@/components/book/ProgressSaver';
 import ViewCounter from '@/components/book/ViewCounter';
+import CommentsSection from '@/components/book/CommentsSection';
 
 interface ReadPageProps {
     params: Promise<{
@@ -22,8 +25,7 @@ export default async function ReadPage({ params }: ReadPageProps) {
     //     await incrementChapterViews(chapter.id);
     // }
 
-    const cookieStore = await cookies();
-    const isAuthenticated = cookieStore.get('auth_token')?.value === 'authenticated';
+    const isAuth = await isAuthenticated();
 
     if (!chapter || (!chapter.published && !isAuthenticated)) {
         notFound();
@@ -92,7 +94,7 @@ export default async function ReadPage({ params }: ReadPageProps) {
                 <header className="mb-12 text-center">
                     <h1 className="text-4xl md:text-5xl font-bold mb-4">{chapter.title}</h1>
                     <div className="text-muted-foreground font-sans text-sm">
-                        {new Date(chapter.createdAt).toLocaleDateString()}
+                        {formatDate(chapter.createdAt)}
                     </div>
                 </header>
 
@@ -149,6 +151,8 @@ export default async function ReadPage({ params }: ReadPageProps) {
                         <div />
                     )}
                 </div>
+
+                <CommentsSection chapterId={chapter.id} isAdmin={isAuth} />
             </article>
         </div>
     );

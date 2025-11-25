@@ -1,12 +1,12 @@
-
 'use client';
 
 import { useState } from 'react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/Button';
-import { Edit, Eye, ArrowUp, ArrowDown } from 'lucide-react';
+import { Edit, Trash2, Eye, EyeOff, ArrowUp, ArrowDown } from 'lucide-react';
 import { Chapter } from '@/types';
 import { useRouter } from 'next/navigation';
+import { formatDate } from '@/lib/utils'; // Added import
 
 interface ChapterListProps {
     initialChapters: Chapter[];
@@ -96,7 +96,7 @@ export default function ChapterList({ initialChapters }: ChapterListProps) {
                                 )}
                             </span>
                             <span>•</span>
-                            <span>{new Date(chapter.updatedAt).toLocaleDateString()}</span>
+                            <span>{formatDate(chapter.updatedAt)}</span>
                         </div>
                     </div>
                     <div className="flex items-center gap-4">

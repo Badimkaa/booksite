@@ -54,3 +54,12 @@ export interface User {
     role: UserRole;
     createdAt: string;
 }
+
+export interface Comment {
+    id: string;
+    chapterId: string;
+    userId?: string;
+    username: string;
+    content: string;
+    createdAt: string;
+}

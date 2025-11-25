@@ -295,3 +295,43 @@ export async function deleteUser(id: string): Promise<void> {
     const newUsers = users.filter((u) => u.id !== id);
     await fs.writeFile(usersFile, JSON.stringify(newUsers, null, 2));
 }
+
+const commentsFile = path.join(dataDirectory, 'comments.json');
+import { Comment } from '@/types';
+
+export async function getComments(chapterId: string): Promise<Comment[]> {
+    await ensureDataDirectory();
+    try {
+        const fileContent = await fs.readFile(commentsFile, 'utf8');
+        const allComments: Comment[] = JSON.parse(fileContent);
+        return allComments.filter(c => c.chapterId === chapterId).sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+    } catch (error) {
+        return [];
+    }
+}
+
+export async function saveComment(comment: Comment): Promise<void> {
+    await ensureDataDirectory();
+    let comments: Comment[] = [];
+    try {
+        const fileContent = await fs.readFile(commentsFile, 'utf8');
+        comments = JSON.parse(fileContent);
+    } catch (error) {
+        // File doesn't exist or is empty
+    }
+
+    comments.push(comment);
+    await fs.writeFile(commentsFile, JSON.stringify(comments, null, 2));
+}
+
+export async function deleteComment(id: string): Promise<void> {
+    await ensureDataDirectory();
+    try {
+        const fileContent = await fs.readFile(commentsFile, 'utf8');
+        let comments: Comment[] = JSON.parse(fileContent);
+        comments = comments.filter(c => c.id !== id);
+        await fs.writeFile(commentsFile, JSON.stringify(comments, null, 2));
+    } catch (error) {
+        // Ignore
+    }
+}

@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -6,6 +5,7 @@ import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { User } from '@/types';
 import { Trash2, UserPlus, Shield, ShieldAlert } from 'lucide-react';
+import { formatDate } from '@/lib/utils';
 
 export default function UsersPage() {
     const [users, setUsers] = useState<User[]>([]);
@@ -140,15 +140,15 @@ export default function UsersPage() {
                         </div>
                         <div className="col-span-4">
                             <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${user.role === 'SUPER_ADMIN'
-                                    ? 'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-300'
-                                    : 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300'
+                                ? 'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-300'
+                                : 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300'
                                 }`}>
                                 {user.role === 'SUPER_ADMIN' ? <ShieldAlert className="w-3 h-3 mr-1" /> : <Shield className="w-3 h-3 mr-1" />}
                                 {user.role === 'SUPER_ADMIN' ? 'Главный админ' : 'Редактор'}
                             </span>
                         </div>
                         <div className="col-span-3 text-sm text-muted-foreground">
-                            {new Date(user.createdAt).toLocaleDateString()}
+                            {formatDate(user.createdAt)}
                         </div>
                         <div className="col-span-1 text-right">
                             <Button

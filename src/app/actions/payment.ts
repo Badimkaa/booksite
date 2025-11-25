@@ -2,9 +2,9 @@
 
 import { redirect } from 'next/navigation';
 import { v4 as uuidv4 } from 'uuid';
-import { createHmac } from 'crypto';
 import { getCourseById } from '@/lib/db';
 import { saveOrder, Order } from '@/lib/orders';
+import { createProdamusSignature, flattenObject } from '@/lib/prodamus';
 
 const PRODAMUS_URL = process.env.PRODAMUS_URL;
 const PRODAMUS_SECRET_KEY = process.env.PRODAMUS_SECRET_KEY;
@@ -51,53 +51,13 @@ export async function initiatePayment(courseId: string) {
         paid_content: course.accessContent || `Спасибо за покупку курса "${course.title}"!`,
     };
 
-    // 1. Sort keys recursively
-    const sortedData = sortObjectKeys(data);
+    // 1. Create signature
+    const signature = createProdamusSignature(data, PRODAMUS_SECRET_KEY);
 
-    // 2. Convert to JSON (no spaces, ensure ASCII is false)
-    // IMPORTANT: PHP json_encode escapes slashes by default (e.g. "/" -> "\/").
-    // JS JSON.stringify does not. We must emulate PHP behavior for the signature to match.
-    const jsonString = JSON.stringify(sortedData).replace(/\//g, '\\/');
-
-    // 3. Sign
-    const hmac = createHmac('sha256', PRODAMUS_SECRET_KEY);
-    hmac.update(jsonString);
-    const signature = hmac.digest('hex');
-
-    // 4. Flatten for URL
+    // 2. Flatten for URL
     const flatParams = flattenObject(data);
     flatParams.signature = signature;
 
     const queryString = new URLSearchParams(flatParams).toString();
     redirect(`${PRODAMUS_URL}?${queryString}`);
-}
-
-function sortObjectKeys(obj: any): any {
-    if (Array.isArray(obj)) {
-        return obj.map(sortObjectKeys);
-    } else if (typeof obj === 'object' && obj !== null) {
-        return Object.keys(obj)
-            .sort()
-            .reduce((acc, key) => {
-                acc[key] = sortObjectKeys(obj[key]);
-                return acc;
-            }, {} as any);
-    }
-    return obj;
-}
-
-function flattenObject(obj: any, prefix = ''): Record<string, string> {
-    return Object.keys(obj).reduce((acc: any, k) => {
-        const pre = prefix.length ? `${prefix}[${k}]` : k;
-        if (typeof obj[k] === 'object' && obj[k] !== null && !Array.isArray(obj[k])) {
-            Object.assign(acc, flattenObject(obj[k], pre));
-        } else if (Array.isArray(obj[k])) {
-            obj[k].forEach((v: any, i: number) => {
-                Object.assign(acc, flattenObject(v, `${pre}[${i}]`));
-            });
-        } else {
-            acc[pre] = obj[k];
-        }
-        return acc;
-    }, {});
 }

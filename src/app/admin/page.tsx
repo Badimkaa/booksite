@@ -1,6 +1,8 @@
 import Link from 'next/link';
 import { getChapters, getCourses, getSchedule, getUsers } from '@/lib/db';
-import { BookOpen, GraduationCap, Calendar, ArrowRight, Users } from 'lucide-react';
+import { Button } from '@/components/ui/Button';
+import { Plus, BookOpen, Users, Calendar, Settings, LogOut, GraduationCap, ArrowRight } from 'lucide-react';
+import { formatDate } from '@/lib/utils';
 import { cookies } from 'next/headers';
 import { jwtVerify } from 'jose';
 
@@ -124,9 +126,9 @@ export default async function AdminDashboard() {
                                         </div>
                                     )}
                                 </div>
-                                <span className="text-xs text-muted-foreground">
-                                    {new Date(chapter.updatedAt).toLocaleDateString()}
-                                </span>
+                                <div className="text-sm text-muted-foreground">
+                                    {formatDate(chapter.updatedAt)}
+                                </div>
                             </div>
                         ))}
                     </div>

@@ -1,7 +1,8 @@
 import Link from 'next/link';
 import { getChapters, getSettings } from '@/lib/db';
 import { Button } from '@/components/ui/Button';
-import { BookOpen } from 'lucide-react';
+import { BookOpen, Lock } from 'lucide-react';
+import { formatDate } from '@/lib/utils';
 import ContinueReading from '@/components/book/ContinueReading';
 
 export const dynamic = 'force-dynamic';
@@ -64,9 +65,9 @@ export default async function BookPage() {
                                                 />
                                             )}
                                         </div>
-                                        <span className="text-sm text-muted-foreground font-sans ml-4 whitespace-nowrap">
-                                            {new Date(chapter.createdAt).toLocaleDateString()}
-                                        </span>
+                                        <div className="text-sm text-muted-foreground ml-4 whitespace-nowrap">
+                                            {formatDate(chapter.createdAt)}
+                                        </div>
                                     </div>
                                 </Link>
                             ))
