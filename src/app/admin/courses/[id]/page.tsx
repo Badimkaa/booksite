@@ -24,7 +24,9 @@ export default async function CourseEditorPage({ params }: CourseEditorProps) {
         price: 0,
         slug: '',
         image: '',
-        features: []
+        features: [],
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
     };
 
     if (!isNew) {
@@ -168,6 +170,18 @@ export default async function CourseEditorPage({ params }: CourseEditorProps) {
                             defaultValue={course.description}
                             required
                             rows={4}
+                            className="flex w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                        />
+                    </div>
+
+                    <div className="grid gap-2">
+                        <label htmlFor="accessContent" className="font-medium">Материалы после оплаты (ссылка или сообщение)</label>
+                        <textarea
+                            id="accessContent"
+                            name="accessContent"
+                            defaultValue={course.accessContent || ''}
+                            rows={3}
+                            placeholder="Спасибо за покупку! Ссылка на материалы: https://..."
                             className="flex w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                         />
                     </div>

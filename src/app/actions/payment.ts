@@ -35,41 +35,69 @@ export async function initiatePayment(courseId: string) {
     await saveOrder(order);
 
     // Prepare Prodamus parameters
-    const params: Record<string, string> = {
+    const data = {
         order_id: orderId,
-        products_for_receipt: `${course.title}, ${amount} rub, 1 pc`,
         do: 'pay',
         urlReturn: `${NEXT_PUBLIC_APP_URL}/payment/success?order_id=${orderId}`,
         urlSuccess: `${NEXT_PUBLIC_APP_URL}/payment/success?order_id=${orderId}`,
         sys: 'natasha_site',
+        products: [
+            {
+                name: course.title,
+                price: amount.toString(),
+                quantity: '1',
+            }
+        ],
+        paid_content: course.accessContent || `Спасибо за покупку курса "${course.title}"!`,
     };
 
-    // Generate signature
-    // Signature logic: HmacSHA256 of sorted params values joined by nothing?
-    // Wait, Prodamus signature for LINK generation is often just passing params to the form.
-    // The documentation says "Signature is formed based on the data of the incoming POST request". That's for Webhook.
-    // For the LINK, we usually just send GET parameters.
-    // Some integrations require signing the link, others don't.
-    // Let's check the standard "Simple integration" (GET request).
-    // Usually it's just `url?order_id=...&products=...`.
-    // But to be safe and prevent tampering, we should sign it if Prodamus supports it on the GET endpoint.
-    // However, Prodamus often works without signature for simple links, but then the user could change the price in the URL.
-    // CRITICAL: We must ensure the price is correct.
-    // Prodamus "Payment Form" usually takes `sum` or `products` in the URL.
-    // Let's construct the URL with `products` array (encoded).
+    // 1. Sort keys recursively
+    const sortedData = sortObjectKeys(data);
 
-    // Actually, for the "Payment Form" integration, we construct a URL like:
-    // https://demo.payform.ru/?do=link&order_id=123&...
+    // 2. Convert to JSON (no spaces, ensure ASCII is false)
+    // IMPORTANT: PHP json_encode escapes slashes by default (e.g. "/" -> "\/").
+    // JS JSON.stringify does not. We must emulate PHP behavior for the signature to match.
+    const jsonString = JSON.stringify(sortedData).replace(/\//g, '\\/');
 
-    // Let's try to sign it to be safe.
-    // The standard signature for Prodamus *requests* (not webhooks) is often:
-    // hmac_sha256(params_sorted_by_key_and_joined, secret)
-    // But I need to be sure.
-    // Since I can't browse documentation deeply right now, I will use the standard params WITHOUT signature first, 
-    // BUT I will verify the amount in the Webhook. The Webhook is the source of truth.
-    // If the user changes the price in the URL, they pay less, but the Webhook will say "paid 1 ruble".
-    // My Webhook logic must check if `amount_paid == course.price`.
+    // 3. Sign
+    const hmac = createHmac('sha256', PRODAMUS_SECRET_KEY);
+    hmac.update(jsonString);
+    const signature = hmac.digest('hex');
 
-    const queryString = new URLSearchParams(params).toString();
+    // 4. Flatten for URL
+    const flatParams = flattenObject(data);
+    flatParams.signature = signature;
+
+    const queryString = new URLSearchParams(flatParams).toString();
     redirect(`${PRODAMUS_URL}?${queryString}`);
+}
+
+function sortObjectKeys(obj: any): any {
+    if (Array.isArray(obj)) {
+        return obj.map(sortObjectKeys);
+    } else if (typeof obj === 'object' && obj !== null) {
+        return Object.keys(obj)
+            .sort()
+            .reduce((acc, key) => {
+                acc[key] = sortObjectKeys(obj[key]);
+                return acc;
+            }, {} as any);
+    }
+    return obj;
+}
+
+function flattenObject(obj: any, prefix = ''): Record<string, string> {
+    return Object.keys(obj).reduce((acc: any, k) => {
+        const pre = prefix.length ? `${prefix}[${k}]` : k;
+        if (typeof obj[k] === 'object' && obj[k] !== null && !Array.isArray(obj[k])) {
+            Object.assign(acc, flattenObject(obj[k], pre));
+        } else if (Array.isArray(obj[k])) {
+            obj[k].forEach((v: any, i: number) => {
+                Object.assign(acc, flattenObject(v, `${pre}[${i}]`));
+            });
+        } else {
+            acc[pre] = obj[k];
+        }
+        return acc;
+    }, {});
 }

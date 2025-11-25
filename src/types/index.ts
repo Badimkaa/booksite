@@ -22,6 +22,8 @@ export interface Course {
     image: string;
     accessContent?: string; // Link or message to show after payment
     features: string[];
+    createdAt: string;
+    updatedAt: string;
 }
 
 export interface ScheduleEvent {
