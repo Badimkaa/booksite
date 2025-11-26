@@ -39,3 +39,7 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# local data (keep folder structure but ignore content)
+/data/*
+!/data/.gitkeep
