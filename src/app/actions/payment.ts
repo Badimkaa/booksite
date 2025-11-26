@@ -31,6 +31,8 @@ export async function initiatePayment(courseId: string) {
         status: 'pending',
         createdAt: new Date(),
         updatedAt: new Date(),
+        customerEmail: null,
+        customerPhone: null,
     };
     await saveOrder(order);
 
