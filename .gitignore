@@ -43,3 +43,5 @@ next-env.d.ts
 # local data (keep folder structure but ignore content)
 /data/*
 !/data/.gitkeep
+
+/src/generated/prisma

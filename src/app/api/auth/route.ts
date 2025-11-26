@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
-import { getUserByUsername } from '@/lib/db';
+import { getUser } from '@/lib/db';
 import bcrypt from 'bcryptjs';
 import { SignJWT } from 'jose';
 
@@ -12,7 +12,7 @@ export async function POST(request: Request) {
     try {
         const { username, password } = await request.json();
 
-        const user = await getUserByUsername(username);
+        const user = await getUser(username);
 
         if (!user) {
             return NextResponse.json({ error: 'Invalid credentials' }, { status: 401 });

@@ -1,0 +1,111 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String    @id @default(uuid())
+  username     String    @unique
+  passwordHash String
+  role         String    // 'SUPER_ADMIN' | 'EDITOR'
+  createdAt    DateTime  @default(now())
+  comments     Comment[]
+}
+
+model Course {
+  id            String   @id @default(uuid())
+  title         String
+  description   String
+  price         Float?
+  slug          String   @unique
+  image         String
+  accessContent String?
+  features      String   // Stored as JSON string
+  isActive      Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  orders        Order[]
+}
+
+model Chapter {
+  id             String    @id @default(uuid())
+  title          String
+  slug           String    @unique
+  content        String
+  excerpt        String
+  published      Boolean   @default(false)
+  videoUrl       String?
+  telegramLink   String?
+  views          Int       @default(0)
+  lastModifiedBy String?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  comments       Comment[]
+}
+
+model Order {
+  id            String   @id @default(uuid())
+  courseId      String
+  course        Course   @relation(fields: [courseId], references: [id])
+  amount        Float
+  status        String   // 'pending' | 'paid' | 'failed'
+  customerEmail String?
+  customerPhone String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model ScheduleEvent {
+  id        String   @id @default(uuid())
+  title     String
+  date      DateTime
+  type      String   // 'online' | 'offline'
+  location  String
+  link      String?
+  price     Float?
+  createdAt DateTime @default(now())
+}
+
+model Testimonial {
+  id        String   @id @default(uuid())
+  name      String
+  text      String
+  date      DateTime
+  program   String?
+  avatar    String?
+  createdAt DateTime @default(now())
+}
+
+model Comment {
+  id        String   @id @default(uuid())
+  content   String
+  chapterId String
+  chapter   Chapter  @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+  userId    String?
+  user      User?    @relation(fields: [userId], references: [id])
+  username  String   // Fallback if user deleted or guest
+  createdAt DateTime @default(now())
+}
+
+model Registration {
+  id         String   @id @default(uuid())
+  eventId    String
+  eventTitle String
+  name       String
+  contact    String
+  message    String?
+  createdAt  DateTime @default(now())
+}
+
+model SiteSettings {
+  id          Int    @id @default(1)
+  title       String
+  description String
+}

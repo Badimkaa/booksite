@@ -1,6 +1,6 @@
 
 import { NextResponse } from 'next/server';
-import { getUsers, saveUser, deleteUser, getUserByUsername } from '@/lib/db';
+import { getUsers, saveUser, deleteUser, getUser } from '@/lib/db';
 import { v4 as uuidv4 } from 'uuid';
 import bcrypt from 'bcryptjs';
 import { cookies } from 'next/headers';
@@ -47,7 +47,7 @@ export async function POST(request: Request) {
             return NextResponse.json({ error: 'Missing fields' }, { status: 400 });
         }
 
-        const existingUser = await getUserByUsername(username);
+        const existingUser = await getUser(username);
         if (existingUser) {
             return NextResponse.json({ error: 'Username already exists' }, { status: 409 });
         }
