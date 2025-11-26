@@ -43,5 +43,14 @@
     "location": "example.com",
     "link": "",
     "price": 2000
+  },
+  {
+    "id": "b843151b-f073-4eba-bbd0-33a712c79af1",
+    "title": "123",
+    "date": "2025-11-26T05:43",
+    "type": "online",
+    "location": "",
+    "link": "",
+    "price": 0
   }
 ]

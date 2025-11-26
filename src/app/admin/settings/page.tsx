@@ -5,7 +5,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
-import { Loader2, ChevronLeft } from 'lucide-react';
+import { Loader2, ChevronLeft, Eye, EyeOff } from 'lucide-react';
 
 export default function SettingsPage() {
     const router = useRouter();

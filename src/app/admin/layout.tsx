@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { Button } from '@/components/ui/Button';
-import { BookOpen, GraduationCap, Calendar, Settings, LayoutDashboard, Users, Home } from 'lucide-react';
+import { BookOpen, GraduationCap, Calendar, Settings, LayoutDashboard, Users, Home, User } from 'lucide-react';
 import { cookies } from 'next/headers';
 import { jwtVerify } from 'jose';
 import { LogoutButton } from '@/components/admin/LogoutButton';
@@ -80,6 +80,12 @@ export default async function AdminLayout({
                         <Button variant="ghost" className="w-full justify-start gap-3">
                             <Settings className="h-4 w-4" />
                             Настройки
+                        </Button>
+                    </Link>
+                    <Link href="/admin/profile">
+                        <Button variant="ghost" className="w-full justify-start gap-3">
+                            <User className="h-4 w-4" />
+                            Профиль
                         </Button>
                     </Link>
                 </nav>

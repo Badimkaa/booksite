@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { User } from '@/types';
-import { Trash2, UserPlus, Shield, ShieldAlert } from 'lucide-react';
+import { Trash2, UserPlus, Shield, ShieldAlert, Key, Eye, EyeOff } from 'lucide-react';
 import { formatDate } from '@/lib/utils';
 
 export default function UsersPage() {
@@ -16,6 +16,13 @@ export default function UsersPage() {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [role, setRole] = useState<'SUPER_ADMIN' | 'EDITOR'>('EDITOR');
+
+    // Password change modal state
+    const [showPasswordModal, setShowPasswordModal] = useState(false);
+    const [selectedUser, setSelectedUser] = useState<User | null>(null);
+    const [newUserPassword, setNewUserPassword] = useState('');
+    const [confirmUserPassword, setConfirmUserPassword] = useState('');
+    const [showPassword, setShowPassword] = useState(false);
 
     useEffect(() => {
         fetchUsers();
@@ -71,6 +78,38 @@ export default function UsersPage() {
             }
         } catch (error) {
             console.error('Failed to delete user', error);
+        }
+    };
+
+    const handleChangePassword = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!selectedUser) return;
+
+        if (newUserPassword !== confirmUserPassword) {
+            alert('Пароли не совпадают');
+            return;
+        }
+
+        try {
+            const res = await fetch('/api/users/password', {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ userId: selectedUser.id, newPassword: newUserPassword }),
+            });
+
+            if (res.ok) {
+                alert('Пароль успешно изменен');
+                setShowPasswordModal(false);
+                setNewUserPassword('');
+                setConfirmUserPassword('');
+                setSelectedUser(null);
+            } else {
+                const data = await res.json();
+                alert(data.error || 'Ошибка при смене пароля');
+            }
+        } catch (error) {
+            console.error('Failed to change password', error);
+            alert('Ошибка при смене пароля');
         }
     };
 
@@ -150,7 +189,21 @@ export default function UsersPage() {
                         <div className="col-span-3 text-sm text-muted-foreground">
                             {formatDate(user.createdAt)}
                         </div>
-                        <div className="col-span-1 text-right">
+                        <div className="col-span-1 text-right flex justify-end gap-1">
+                            <Button
+                                variant="ghost"
+                                size="icon"
+                                onClick={() => {
+                                    setSelectedUser(user);
+                                    setNewUserPassword('');
+                                    setConfirmUserPassword('');
+                                    setShowPasswordModal(true);
+                                }}
+                                className="text-blue-500 hover:text-blue-700 hover:bg-blue-50"
+                                title="Сменить пароль"
+                            >
+                                <Key className="h-4 w-4" />
+                            </Button>
                             <Button
                                 variant="ghost"
                                 size="icon"
@@ -169,6 +222,54 @@ export default function UsersPage() {
                     </div>
                 )}
             </div>
+
+            {showPasswordModal && selectedUser && (
+                <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+                    <div className="bg-background p-6 rounded-lg shadow-lg w-full max-w-md">
+                        <h3 className="text-lg font-bold mb-4">Смена пароля для {selectedUser.username}</h3>
+                        <form onSubmit={handleChangePassword} className="space-y-4">
+                            <div className="relative">
+                                <Input
+                                    type={showPassword ? "text" : "password"}
+                                    placeholder="Новый пароль"
+                                    value={newUserPassword}
+                                    onChange={(e) => setNewUserPassword(e.target.value)}
+                                    required
+                                    minLength={6}
+                                />
+                            </div>
+                            <div className="relative">
+                                <Input
+                                    type={showPassword ? "text" : "password"}
+                                    placeholder="Подтвердите пароль"
+                                    value={confirmUserPassword}
+                                    onChange={(e) => setConfirmUserPassword(e.target.value)}
+                                    required
+                                    minLength={6}
+                                />
+                            </div>
+
+                            <div className="flex items-center gap-2">
+                                <button
+                                    type="button"
+                                    onClick={() => setShowPassword(!showPassword)}
+                                    className="text-sm text-muted-foreground flex items-center gap-1 hover:text-foreground"
+                                >
+                                    {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                                    {showPassword ? 'Скрыть пароли' : 'Показать пароли'}
+                                </button>
+                            </div>
+
+                            <div className="flex justify-end gap-2">
+                                <Button type="button" variant="ghost" onClick={() => setShowPasswordModal(false)}>
+                                    Отмена
+                                </Button>
+                                <Button type="submit">Сохранить</Button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }
