@@ -25,7 +25,9 @@ export default async function CourseEditorPage({ params }: CourseEditorProps) {
         price: 0,
         slug: '',
         image: '',
+        accessContent: null,
         features: [],
+        isActive: true,
         createdAt: new Date(),
         updatedAt: new Date()
     };
@@ -76,7 +78,7 @@ export default async function CourseEditorPage({ params }: CourseEditorProps) {
             id: isNew ? uuidv4() : id,
             title,
             description,
-            price,
+            price: formData.get('price') ? Number(formData.get('price')) : null,
             slug,
             image: imagePath,
             features: featuresString.split('\n').filter(f => f.trim() !== ''),
@@ -151,7 +153,7 @@ export default async function CourseEditorPage({ params }: CourseEditorProps) {
                             type="number"
                             id="price"
                             name="price"
-                            defaultValue={course.price}
+                            defaultValue={course.price ?? ''}
                             required
                             className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                         />

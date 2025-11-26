@@ -7,22 +7,22 @@ export interface Chapter {
     published: boolean;
     createdAt: Date;
     updatedAt: Date;
-    videoUrl?: string;
-    telegramLink?: string;
-    views?: number;
-    lastModifiedBy?: string;
+    videoUrl: string | null;
+    telegramLink: string | null;
+    views: number;
+    lastModifiedBy: string | null;
 }
 
 export interface Course {
     id: string;
     title: string;
     description: string;
-    price?: number;
+    price: number | null;
     slug: string;
     image: string;
-    accessContent?: string; // Link or message to show after payment
+    accessContent: string | null; // Link or message to show after payment
     features: string[];
-    isActive?: boolean;
+    isActive: boolean;
     createdAt: Date;
     updatedAt: Date;
 }
@@ -33,8 +33,8 @@ export interface ScheduleEvent {
     date: Date;
     type: 'online' | 'offline';
     location: string;
-    link?: string;
-    price?: number;
+    link: string | null;
+    price: number | null;
 }
 
 export interface Testimonial {
@@ -42,8 +42,8 @@ export interface Testimonial {
     name: string;
     text: string;
     date: Date;
-    program?: string;
-    avatar?: string;
+    program: string | null;
+    avatar: string | null;
 }
 
 export type UserRole = 'SUPER_ADMIN' | 'EDITOR';
@@ -53,17 +53,16 @@ export interface User {
     username: string;
     passwordHash: string;
     role: UserRole;
-    createdAt: string;
+    createdAt: Date;
 }
 
 export interface Comment {
     id: string;
     chapterId: string;
-    userId?: string;
+    userId: string | null;
     username: string;
     content: string;
     createdAt: Date;
-    updatedAt: Date;
 }
 
 export interface Registration {
@@ -72,6 +71,6 @@ export interface Registration {
     eventTitle: string;
     name: string;
     contact: string;
-    message?: string;
-    createdAt: string;
+    message: string | null;
+    createdAt: Date;
 }
