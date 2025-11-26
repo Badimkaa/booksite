@@ -25,7 +25,7 @@ async function createAdmin() {
         username,
         passwordHash,
         role: 'SUPER_ADMIN',
-        createdAt: new Date().toISOString(),
+        createdAt: new Date(),
     });
 
     console.log(`Admin user created with username: ${username} and password: ${password}`);
