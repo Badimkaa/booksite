@@ -1,5 +1,5 @@
 import { prisma } from '@/lib/prisma';
-import { Order } from '@prisma/client';
+import type { Order } from '@/types';
 
 export type { Order };
 
