@@ -115,9 +115,9 @@ export async function getCourses(): Promise<Course[]> {
         orderBy: { createdAt: 'desc' }
     });
     // Parse features from JSON string
-    return courses.map(c => ({
+    return courses.map((c): Course => ({
         ...c,
-        features: JSON.parse(c.features)
+        features: JSON.parse(c.features) as string[]
     }));
 }
 
@@ -126,8 +126,8 @@ export async function getCourseById(id: string): Promise<Course | null> {
     if (!course) return null;
     return {
         ...course,
-        features: JSON.parse(course.features)
-    };
+        features: JSON.parse(course.features) as string[]
+    } as Course;
 }
 
 export async function getCourse(slug: string): Promise<Course | null> {
@@ -135,8 +135,8 @@ export async function getCourse(slug: string): Promise<Course | null> {
     if (!course) return null;
     return {
         ...course,
-        features: JSON.parse(course.features)
-    };
+        features: JSON.parse(course.features) as string[]
+    } as Course;
 }
 
 export async function saveCourse(course: any): Promise<void> {
