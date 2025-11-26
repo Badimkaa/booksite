@@ -1,16 +1,21 @@
 
-import { saveUser, getUserByUsername } from '../src/lib/db';
+import { saveUser, getUser } from '../src/lib/db';
 import { v4 as uuidv4 } from 'uuid';
 import bcrypt from 'bcryptjs';
 
-async function createAdmin() {
-    const username = 'admin';
-    const password = 'adminpassword'; // Change this!
+const username = process.argv[2];
+const password = process.argv[3];
 
-    const existingUser = await getUserByUsername(username);
+if (!username || !password) {
+    console.error('Usage: ts-node scripts/create-admin.ts <username> <password>');
+    process.exit(1);
+}
+
+async function createAdmin() {
+    const existingUser = await getUser(username);
     if (existingUser) {
-        console.log('Admin user already exists.');
-        return;
+        console.error('User already exists');
+        process.exit(1);
     }
 
     const passwordHash = await bcrypt.hash(password, 10);
