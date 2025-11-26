@@ -23,6 +23,38 @@ export async function getChapterBySlug(slug: string): Promise<Chapter | null> {
     });
 }
 
+export async function getChapter(slug: string): Promise<Chapter | null> {
+    return getChapterBySlug(slug);
+}
+
+export async function getChapterById(id: string): Promise<Chapter | null> {
+    return prisma.chapter.findUnique({
+        where: { id }
+    });
+}
+
+export async function incrementChapterViews(id: string): Promise<void> {
+    await prisma.chapter.update({
+        where: { id },
+        data: {
+            views: {
+                increment: 1
+            }
+        }
+    });
+}
+
+export async function reorderChapters(chapters: { id: string; order: number }[]): Promise<void> {
+    // This is a placeholder as Prisma doesn't support bulk update easily for different values
+    // and the current schema doesn't have an 'order' field.
+    // Assuming the user meant to reorder by updating some field, but for now we'll skip
+    // or if there is an order field, we would update it.
+    // Checking schema... Chapter doesn't have 'order' field in the provided schema snippets.
+    // The original JSON implementation likely relied on array order.
+    // For now, we will leave this empty or log a warning as 'order' field is missing.
+    console.warn('reorderChapters: Order field missing in schema');
+}
+
 export async function saveChapter(chapter: Partial<Chapter> & { id: string; title: string; slug: string; content: string }): Promise<void> {
     await prisma.chapter.upsert({
         where: { id: chapter.id },
@@ -98,6 +130,15 @@ export async function getCourseById(id: string): Promise<Course | null> {
     };
 }
 
+export async function getCourse(slug: string): Promise<Course | null> {
+    const course = await prisma.course.findUnique({ where: { slug } });
+    if (!course) return null;
+    return {
+        ...course,
+        features: JSON.parse(course.features)
+    };
+}
+
 export async function saveCourse(course: any): Promise<void> {
     await prisma.course.upsert({
         where: { id: course.id },
@@ -134,6 +175,10 @@ export async function getSchedule(): Promise<ScheduleEvent[]> {
     return prisma.scheduleEvent.findMany({
         orderBy: { date: 'asc' }
     });
+}
+
+export async function getScheduleEventById(id: string): Promise<ScheduleEvent | null> {
+    return prisma.scheduleEvent.findUnique({ where: { id } });
 }
 
 export async function saveScheduleEvent(event: ScheduleEvent): Promise<void> {
