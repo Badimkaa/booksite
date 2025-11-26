@@ -74,3 +74,20 @@ export interface Registration {
     message: string | null;
     createdAt: Date;
 }
+
+export interface SiteSettings {
+    id: number;
+    title: string;
+    description: string;
+}
+
+export interface Order {
+    id: string;
+    courseId: string;
+    amount: number;
+    status: string;
+    customerEmail: string | null;
+    customerPhone: string | null;
+    createdAt: Date;
+    updatedAt: Date;
+}

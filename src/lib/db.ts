@@ -1,5 +1,5 @@
 import { prisma } from '@/lib/prisma';
-import {
+import type {
     Chapter,
     Course,
     ScheduleEvent,
@@ -8,7 +8,7 @@ import {
     Comment,
     Registration,
     SiteSettings
-} from '@prisma/client';
+} from '@/types';
 
 // --- Chapters ---
 export async function getChapters(): Promise<Chapter[]> {
