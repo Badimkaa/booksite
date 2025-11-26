@@ -5,8 +5,8 @@ export interface Chapter {
     content: string;
     excerpt: string;
     published: boolean;
-    createdAt: string;
-    updatedAt: string;
+    createdAt: Date;
+    updatedAt: Date;
     videoUrl?: string;
     telegramLink?: string;
     views?: number;
@@ -23,14 +23,14 @@ export interface Course {
     accessContent?: string; // Link or message to show after payment
     features: string[];
     isActive?: boolean;
-    createdAt: string;
-    updatedAt: string;
+    createdAt: Date;
+    updatedAt: Date;
 }
 
 export interface ScheduleEvent {
     id: string;
     title: string;
-    date: string;
+    date: Date;
     type: 'online' | 'offline';
     location: string;
     link?: string;
@@ -41,7 +41,7 @@ export interface Testimonial {
     id: string;
     name: string;
     text: string;
-    date: string;
+    date: Date;
     program?: string;
     avatar?: string;
 }
@@ -62,7 +62,8 @@ export interface Comment {
     userId?: string;
     username: string;
     content: string;
-    createdAt: string;
+    createdAt: Date;
+    updatedAt: Date;
 }
 
 export interface Registration {

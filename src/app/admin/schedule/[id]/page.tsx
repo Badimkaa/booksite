@@ -19,7 +19,7 @@ export default async function EventEditorPage({ params }: EventEditorProps) {
     let event: ScheduleEvent = {
         id: uuidv4(),
         title: '',
-        date: new Date().toISOString().slice(0, 16), // Current date/time for input
+        date: new Date(), // Current date/time for input
         type: 'online',
         location: '',
         link: '',
@@ -47,7 +47,7 @@ export default async function EventEditorPage({ params }: EventEditorProps) {
         const newEvent: ScheduleEvent = {
             id: isNew ? uuidv4() : id,
             title,
-            date,
+            date: new Date(date),
             type,
             location,
             link,
@@ -97,7 +97,7 @@ export default async function EventEditorPage({ params }: EventEditorProps) {
                                 type="datetime-local"
                                 id="date"
                                 name="date"
-                                defaultValue={event.date}
+                                defaultValue={event.date instanceof Date ? event.date.toISOString().slice(0, 16) : new Date(event.date).toISOString().slice(0, 16)}
                                 required
                                 className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                             />

@@ -26,8 +26,8 @@ export default async function CourseEditorPage({ params }: CourseEditorProps) {
         slug: '',
         image: '',
         features: [],
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString()
+        createdAt: new Date(),
+        updatedAt: new Date()
     };
 
     if (!isNew) {
@@ -82,8 +82,8 @@ export default async function CourseEditorPage({ params }: CourseEditorProps) {
             features: featuresString.split('\n').filter(f => f.trim() !== ''),
             accessContent,
             isActive,
-            createdAt: course?.createdAt || new Date().toISOString(),
-            updatedAt: new Date().toISOString(),
+            createdAt: course?.createdAt || new Date(),
+            updatedAt: new Date(),
         };
 
         await saveCourse(newCourse);
