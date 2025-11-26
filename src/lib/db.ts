@@ -13,7 +13,7 @@ import type {
 // --- Chapters ---
 export async function getChapters(): Promise<Chapter[]> {
     return prisma.chapter.findMany({
-        orderBy: { createdAt: 'desc' }
+        orderBy: { order: 'asc' }
     });
 }
 
@@ -44,15 +44,16 @@ export async function incrementChapterViews(id: string): Promise<void> {
     });
 }
 
-export async function reorderChapters(chapters: { id: string; order: number }[]): Promise<void> {
-    // This is a placeholder as Prisma doesn't support bulk update easily for different values
-    // and the current schema doesn't have an 'order' field.
-    // Assuming the user meant to reorder by updating some field, but for now we'll skip
-    // or if there is an order field, we would update it.
-    // Checking schema... Chapter doesn't have 'order' field in the provided schema snippets.
-    // The original JSON implementation likely relied on array order.
-    // For now, we will leave this empty or log a warning as 'order' field is missing.
-    console.warn('reorderChapters: Order field missing in schema');
+export async function reorderChapters(orderedIds: string[]): Promise<void> {
+    // Update order for each chapter based on its position in the array
+    const updates = orderedIds.map((id, index) =>
+        prisma.chapter.update({
+            where: { id },
+            data: { order: index }
+        })
+    );
+
+    await Promise.all(updates);
 }
 
 export async function saveChapter(chapter: Partial<Chapter> & { id: string; title: string; slug: string; content: string }): Promise<void> {
