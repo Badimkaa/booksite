@@ -44,8 +44,11 @@ export async function POST(request: Request) {
         content,
         excerpt: excerpt || content.replace(/<[^>]*>?/gm, '').substring(0, 150) + '...',
         published: published || false,
-        createdAt: body.createdAt || new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
+        videoUrl: body.videoUrl || null,
+        telegramLink: body.telegramLink || null,
+        views: 0,
+        createdAt: body.createdAt ? new Date(body.createdAt) : new Date(),
+        updatedAt: new Date(),
         lastModifiedBy: username,
     };
 
