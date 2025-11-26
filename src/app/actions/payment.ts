@@ -29,8 +29,8 @@ export async function initiatePayment(courseId: string) {
         courseId: course.id,
         amount,
         status: 'pending',
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
+        createdAt: new Date(),
+        updatedAt: new Date(),
     };
     await saveOrder(order);
 

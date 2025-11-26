@@ -59,7 +59,7 @@ export async function POST(request: Request) {
             username,
             passwordHash,
             role,
-            createdAt: new Date().toISOString(),
+            createdAt: new Date(),
         };
 
         await saveUser(newUser);
