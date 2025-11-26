@@ -113,10 +113,10 @@ export async function saveSettings(settings: { title: string; description: strin
 // --- Courses ---
 export async function getCourses(): Promise<Course[]> {
     const courses = await prisma.course.findMany({
-        orderBy: { createdAt: 'desc' }
+        orderBy: { order: 'asc' }
     });
     // Parse features from JSON string
-    return courses.map((c): Course => ({
+    return courses.map((c: any): Course => ({
         ...c,
         features: JSON.parse(c.features) as string[]
     }));
@@ -169,6 +169,18 @@ export async function saveCourse(course: any): Promise<void> {
 
 export async function deleteCourse(id: string): Promise<void> {
     await prisma.course.delete({ where: { id } });
+}
+
+export async function reorderCourses(orderedIds: string[]): Promise<void> {
+    // Update order for each course based on its position in the array
+    const updates = orderedIds.map((id, index) =>
+        prisma.course.update({
+            where: { id },
+            data: { order: index }
+        })
+    );
+
+    await Promise.all(updates);
 }
 
 // --- Schedule ---

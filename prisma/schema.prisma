@@ -29,6 +29,7 @@ model Course {
   accessContent String?
   features      String   // Stored as JSON string
   isActive      Boolean  @default(true)
+  order         Int      @default(0)
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
   orders        Order[]
