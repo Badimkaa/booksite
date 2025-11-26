@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { getCourse } from '@/lib/db';
 import { Button } from '@/components/ui/Button';
 import { CheckCircle2, ArrowLeft } from 'lucide-react';
+import { initiatePayment } from '@/app/actions/payment';
 
 interface CoursePageProps {
     params: Promise<{
@@ -51,16 +52,26 @@ export default async function CoursePage({ params }: CoursePageProps) {
                     <div className="lg:sticky lg:top-24">
                         <div className="bg-card rounded-2xl overflow-hidden shadow-lg border p-1">
                             <div className="aspect-video bg-muted relative rounded-xl overflow-hidden mb-6">
-                                {/* Placeholder for course image */}
-                                <div className="absolute inset-0 flex items-center justify-center text-muted-foreground bg-secondary/10">
-                                    Image
-                                </div>
+                                {course.image ? (
+                                    // eslint-disable-next-line @next/next/no-img-element
+                                    <img
+                                        src={course.image}
+                                        alt={course.title}
+                                        className="absolute inset-0 w-full h-full object-cover"
+                                    />
+                                ) : (
+                                    <div className="absolute inset-0 flex items-center justify-center text-muted-foreground bg-secondary/10">
+                                        Image
+                                    </div>
+                                )}
                             </div>
                             <div className="p-6 pt-0 text-center">
                                 <div className="text-3xl font-bold mb-6">{course.price} ₽</div>
-                                <Button size="lg" className="w-full text-lg h-14 mb-4">
-                                    Купить курс
-                                </Button>
+                                <form action={initiatePayment.bind(null, course.id)}>
+                                    <Button type="submit" size="lg" className="w-full text-lg h-14 mb-4">
+                                        Купить курс
+                                    </Button>
+                                </form>
                                 <p className="text-sm text-muted-foreground">
                                     Доступ к материалам открывается сразу после оплаты
                                 </p>

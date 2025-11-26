@@ -116,7 +116,7 @@ export default function UsersPage() {
     if (isLoading) return <div className="p-8">Загрузка...</div>;
 
     return (
-        <div className="container mx-auto py-10 px-4 max-w-4xl">
+        <div className="container mx-auto py-10 px-4 max-w-5xl">
             <div className="flex justify-between items-center mb-8">
                 <h1 className="text-3xl font-bold font-serif">Управление пользователями</h1>
                 <Button onClick={() => setIsCreating(!isCreating)}>

@@ -56,15 +56,22 @@ export default async function CoursesPage() {
 
                                     <div className="pt-4 border-t">
                                         {course.price ? (
-                                            <div className="flex items-center gap-4 w-full">
+                                            <div className="space-y-3">
                                                 <div className="font-bold text-lg">
                                                     {course.price.toLocaleString('ru-RU')} ₽
                                                 </div>
-                                                <form action={initiatePayment.bind(null, course.id)} className="ml-auto">
-                                                    <Button type="submit" size="sm">
-                                                        Купить
-                                                    </Button>
-                                                </form>
+                                                <div className="flex gap-2">
+                                                    <Link href={`/courses/${course.slug}`} className="flex-1">
+                                                        <Button variant="outline" size="sm" className="w-full">
+                                                            Подробнее
+                                                        </Button>
+                                                    </Link>
+                                                    <form action={initiatePayment.bind(null, course.id)} className="flex-1">
+                                                        <Button type="submit" size="sm" className="w-full">
+                                                            Купить
+                                                        </Button>
+                                                    </form>
+                                                </div>
                                             </div>
                                         ) : (
                                             <span className="text-muted-foreground text-sm">

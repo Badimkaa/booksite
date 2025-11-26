@@ -88,7 +88,7 @@ export default async function Home() {
 
           <div className="grid md:grid-cols-3 gap-8">
             {courses.slice(0, 3).map((course) => (
-              <div key={course.id} className="bg-card rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow border">
+              <div key={course.id} className="flex flex-col bg-card rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow border">
                 <div className="aspect-video bg-muted relative">
                   {course.image ? (
                     // eslint-disable-next-line @next/next/no-img-element
@@ -103,16 +103,23 @@ export default async function Home() {
                     </div>
                   )}
                 </div>
-                <div className="p-6 flex flex-col h-full">
+                <div className="p-6 flex flex-col flex-1">
                   <h3 className="text-xl font-bold mb-2 font-serif">{course.title}</h3>
                   <p className="text-muted-foreground text-sm line-clamp-3 mb-4 flex-1">
                     {course.description}
                   </p>
-                  <div className="flex justify-between items-center mt-auto">
-                    <span className="font-semibold">{course.price} ₽</span>
-                    <Link href={`/courses/${course.slug}`}>
-                      <Button variant="outline" size="sm">Подробнее</Button>
-                    </Link>
+                  <div className="flex flex-col gap-3 mt-auto">
+                    <div className="flex justify-between items-center">
+                      <span className="font-semibold text-lg">{course.price} ₽</span>
+                    </div>
+                    <div className="flex gap-2">
+                      <Link href={`/courses/${course.slug}`} className="flex-1">
+                        <Button variant="outline" size="sm" className="w-full">Подробнее</Button>
+                      </Link>
+                      <Link href={`/courses/${course.slug}`} className="flex-1">
+                        <Button size="sm" className="w-full">Купить</Button>
+                      </Link>
+                    </div>
                   </div>
                 </div>
               </div>

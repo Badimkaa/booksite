@@ -92,24 +92,23 @@ export function AdminSidebar({ role }: AdminSidebarProps) {
                 )}
             >
                 {/* Header / Toggle */}
-                <div className={cn("p-4 border-b flex items-center", isCollapsed ? "justify-center" : "justify-between")}>
+                {/* Header / Toggle */}
+                <div className={cn("border-b flex items-center transition-all", isCollapsed ? "justify-center p-2" : "justify-between p-4")}>
                     {!isCollapsed && (
                         <Link href="/admin" className="flex items-center gap-2 font-bold text-xl truncate">
                             <LayoutDashboard className="h-6 w-6 text-primary shrink-0" />
                             <span>Админка</span>
                         </Link>
                     )}
-                    {isCollapsed && (
-                        <LayoutDashboard className="h-6 w-6 text-primary shrink-0" />
-                    )}
 
                     <Button
                         variant="ghost"
                         size="icon"
-                        className="hidden md:flex h-8 w-8 ml-auto"
+                        className={cn("hidden md:flex transition-all", isCollapsed ? "h-10 w-10 bg-muted/50 hover:bg-muted" : "h-8 w-8 ml-auto")}
                         onClick={toggleCollapse}
+                        title={isCollapsed ? "Развернуть" : "Свернуть"}
                     >
-                        {isCollapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
+                        {isCollapsed ? <ChevronRight className="h-6 w-6 text-primary" /> : <ChevronLeft className="h-4 w-4" />}
                     </Button>
                 </div>
 

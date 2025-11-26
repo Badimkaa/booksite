@@ -10,7 +10,7 @@ export default async function CoursesAdminPage() {
     const courses = await getCourses();
 
     return (
-        <div className="container mx-auto max-w-4xl py-10 px-6">
+        <div className="container mx-auto max-w-5xl py-10 px-6">
             <div className="flex items-center justify-between mb-8">
                 <h1 className="text-3xl font-bold font-serif">Управление курсами</h1>
                 <Link href="/admin/courses/new">
