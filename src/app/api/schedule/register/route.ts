@@ -19,7 +19,7 @@ export async function POST(request: Request) {
             name,
             contact,
             message,
-            createdAt: new Date().toISOString(),
+            createdAt: new Date(),
         };
 
         await saveRegistration(newRegistration);

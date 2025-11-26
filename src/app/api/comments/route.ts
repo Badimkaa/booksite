@@ -34,9 +34,10 @@ export async function POST(request: Request) {
         const newComment: Comment = {
             id: uuidv4(),
             chapterId,
+            userId: null,
             username,
             content,
-            createdAt: new Date().toISOString(),
+            createdAt: new Date(),
         };
 
         await saveComment(newComment);

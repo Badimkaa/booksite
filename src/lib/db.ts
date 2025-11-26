@@ -174,11 +174,11 @@ export async function deleteCourse(id: string): Promise<void> {
 export async function getSchedule(): Promise<ScheduleEvent[]> {
     return prisma.scheduleEvent.findMany({
         orderBy: { date: 'asc' }
-    });
+    }) as Promise<ScheduleEvent[]>;
 }
 
 export async function getScheduleEventById(id: string): Promise<ScheduleEvent | null> {
-    return prisma.scheduleEvent.findUnique({ where: { id } });
+    return prisma.scheduleEvent.findUnique({ where: { id } }) as Promise<ScheduleEvent | null>;
 }
 
 export async function saveScheduleEvent(event: ScheduleEvent): Promise<void> {
@@ -242,11 +242,11 @@ export async function deleteTestimonial(id: string): Promise<void> {
 
 // --- Users ---
 export async function getUsers(): Promise<User[]> {
-    return prisma.user.findMany();
+    return prisma.user.findMany() as Promise<User[]>;
 }
 
 export async function getUser(username: string): Promise<User | null> {
-    return prisma.user.findUnique({ where: { username } });
+    return prisma.user.findUnique({ where: { username } }) as Promise<User | null>;
 }
 
 export async function saveUser(user: User): Promise<void> {

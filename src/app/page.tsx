@@ -166,7 +166,7 @@ export default async function Home() {
                   </div>
                   <div className="flex items-center gap-4 md:self-center self-start mt-2 md:mt-0 w-full md:w-auto">
                     {event.price && <span className="font-semibold ml-auto md:ml-0">{event.price} ₽</span>}
-                    <a href={event.link} target="_blank" rel="noopener noreferrer" className="w-full md:w-auto">
+                    <a href={event.link ?? undefined} target="_blank" rel="noopener noreferrer" className="w-full md:w-auto">
                       <Button className="w-full md:w-auto">Записаться</Button>
                     </a>
                   </div>

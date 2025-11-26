@@ -51,7 +51,7 @@ export async function POST(request: Request) {
                 // Verify amount
                 if (Math.abs(parseFloat(sum) - order.amount) < 1.0) {
                     order.status = 'paid';
-                    order.updatedAt = new Date().toISOString();
+                    order.updatedAt = new Date();
                     if (customer_email) order.customerEmail = customer_email;
                     if (customer_phone) order.customerPhone = customer_phone;
 
