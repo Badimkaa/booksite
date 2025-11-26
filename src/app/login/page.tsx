@@ -23,6 +23,7 @@ export default function LoginPage() {
 
         if (res.ok) {
             router.push('/admin');
+            router.refresh();
         } else {
             setError('Неверное имя пользователя или пароль');
         }

@@ -22,6 +22,7 @@ export interface Course {
     image: string;
     accessContent?: string; // Link or message to show after payment
     features: string[];
+    isActive?: boolean;
     createdAt: string;
     updatedAt: string;
 }

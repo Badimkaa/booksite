@@ -47,6 +47,7 @@ export default async function CourseEditorPage({ params }: CourseEditorProps) {
         const slug = formData.get('slug') as string;
         const accessContent = formData.get('accessContent') as string;
         const featuresString = formData.get('features') as string;
+        const isActive = formData.get('isActive') === 'on';
         const imageFile = formData.get('image') as File;
 
         let imagePath = course?.image;
@@ -80,6 +81,7 @@ export default async function CourseEditorPage({ params }: CourseEditorProps) {
             image: imagePath,
             features: featuresString.split('\n').filter(f => f.trim() !== ''),
             accessContent,
+            isActive,
             createdAt: course?.createdAt || new Date().toISOString(),
             updatedAt: new Date().toISOString(),
         };
@@ -108,6 +110,17 @@ export default async function CourseEditorPage({ params }: CourseEditorProps) {
 
             <form action={saveAction} className="space-y-8">
                 <div className="grid gap-4">
+                    <div className="flex items-center space-x-2">
+                        <input
+                            type="checkbox"
+                            id="isActive"
+                            name="isActive"
+                            defaultChecked={course.isActive !== false}
+                            className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
+                        />
+                        <label htmlFor="isActive" className="font-medium">Активный курс (виден на сайте)</label>
+                    </div>
+
                     <div className="grid gap-2">
                         <label htmlFor="title" className="font-medium">Название курса</label>
                         <input

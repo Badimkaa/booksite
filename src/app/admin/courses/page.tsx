@@ -33,7 +33,11 @@ export default async function CoursesAdminPage() {
                         >
                             <div>
                                 <h3 className="font-semibold text-lg">{course.title}</h3>
-                                <div className="text-sm text-muted-foreground mt-1">
+                                <div className="text-sm text-muted-foreground mt-1 flex items-center gap-2">
+                                    <span className={`px-2 py-0.5 rounded text-xs font-medium ${course.isActive !== false ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}`}>
+                                        {course.isActive !== false ? 'Активен' : 'Скрыт'}
+                                    </span>
+                                    <span>•</span>
                                     {course.price} ₽ • {course.features.length} модулей
                                 </div>
                             </div>

@@ -26,26 +26,58 @@ export async function generateMetadata() {
   };
 }
 
-export default function RootLayout({
+import { cookies } from "next/headers";
+import { jwtVerify } from "jose";
+import { AdminSidebar } from "@/components/admin/AdminSidebar";
+
+const JWT_SECRET = new TextEncoder().encode(
+  process.env.JWT_SECRET || 'default-secret-change-me'
+);
+
+async function getUserRole() {
+  const cookieStore = await cookies();
+  const token = cookieStore.get('auth_token')?.value;
+
+  if (!token) {
+    console.log('RootLayout: No token found');
+    return null;
+  }
+
+  try {
+    const { payload } = await jwtVerify(token, JWT_SECRET);
+    console.log('RootLayout: Token verified, role:', payload.role);
+    return payload.role as string;
+  } catch (e) {
+    console.error('RootLayout: Token verification failed', e);
+    return null;
+  }
+}
+
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const role = await getUserRole();
+
   return (
     <html lang="ru" suppressHydrationWarning>
       <body
         className={cn(
-          "min-h-screen bg-background font-sans antialiased flex flex-col",
+          "min-h-screen bg-background font-sans antialiased flex",
           inter.variable,
           merriweather.variable
         )}
       >
-        <Header />
-        <main className="flex-1">
-          {children}
-        </main>
-        <Footer />
-        <CookieConsent />
+        {role && <AdminSidebar role={role} />}
+        <div className="flex-1 flex flex-col min-w-0">
+          <Header />
+          <main className="flex-1">
+            {children}
+          </main>
+          <Footer />
+          <CookieConsent />
+        </div>
       </body>
     </html>
   );
