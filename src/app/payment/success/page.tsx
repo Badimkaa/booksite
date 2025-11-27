@@ -56,7 +56,33 @@ export default async function SuccessPage({ searchParams }: SuccessPageProps) {
                     console.log(`Order ${order_id} marked as paid via redirect signature`);
                 }
             } else {
-                console.warn('Redirect signature mismatch', { calculated: calculatedSignature, received: signature });
+                // Try fallback: sign only _payform_ params (excluding _payform_sign)
+                // Prodamus might not sign the order_id if it was just in the URL we provided
+                const payformParams: any = {};
+                Object.keys(otherParams).forEach(key => {
+                    if (key.startsWith('_payform_') && key !== '_payform_sign') {
+                        payformParams[key] = otherParams[key];
+                    }
+                });
+
+                const calculatedSignatureFallback = createProdamusSignature(payformParams, PRODAMUS_SECRET_KEY);
+
+                if (calculatedSignatureFallback === signature) {
+                    if (otherParams._payform_status === 'success') {
+                        order.status = 'paid';
+                        order.updatedAt = new Date();
+                        await saveOrder(order);
+                        console.log(`Order ${order_id} marked as paid via redirect signature (fallback)`);
+                    }
+                } else {
+                    console.warn('Redirect signature mismatch', {
+                        calculated: calculatedSignature,
+                        calculatedFallback: calculatedSignatureFallback,
+                        received: signature,
+                        paramsToSign,
+                        payformParams
+                    });
+                }
             }
         }
     }
