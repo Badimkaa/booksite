@@ -13,6 +13,7 @@ interface RegistrationModalProps {
 
 export default function RegistrationModal({ isOpen, onClose, eventId, eventTitle }: RegistrationModalProps) {
     const [name, setName] = useState('');
+    const [email, setEmail] = useState('');
     const [contact, setContact] = useState('');
     const [message, setMessage] = useState('');
     const [submitting, setSubmitting] = useState(false);
@@ -28,7 +29,7 @@ export default function RegistrationModal({ isOpen, onClose, eventId, eventTitle
             const res = await fetch('/api/schedule/register', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ eventId, eventTitle, name, contact, message }),
+                body: JSON.stringify({ eventId, eventTitle, name, email, contact, message }),
             });
 
             if (res.ok) {
@@ -37,6 +38,7 @@ export default function RegistrationModal({ isOpen, onClose, eventId, eventTitle
                     onClose();
                     setSuccess(false);
                     setName('');
+                    setEmail('');
                     setContact('');
                     setMessage('');
                 }, 2000);
@@ -88,6 +90,20 @@ export default function RegistrationModal({ isOpen, onClose, eventId, eventTitle
                                         value={name}
                                         onChange={(e) => setName(e.target.value)}
                                         className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                                        required
+                                    />
+                                </div>
+                                <div>
+                                    <label htmlFor="email" className="block text-sm font-medium mb-1">
+                                        Email
+                                    </label>
+                                    <input
+                                        type="email"
+                                        id="email"
+                                        value={email}
+                                        onChange={(e) => setEmail(e.target.value)}
+                                        className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                                        placeholder="your@email.com"
                                         required
                                     />
                                 </div>

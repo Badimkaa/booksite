@@ -70,8 +70,11 @@ export interface Registration {
     eventId: string;
     eventTitle: string;
     name: string;
+    email: string;
     contact: string;
     message: string | null;
+    status: string;
+    notes: string | null;
     createdAt: Date;
 }
 

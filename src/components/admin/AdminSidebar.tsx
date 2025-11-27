@@ -15,16 +15,18 @@ import {
     User,
     ChevronLeft,
     ChevronRight,
-    Menu
+    Menu,
+    Mail
 } from 'lucide-react';
 import { LogoutButton } from '@/components/admin/LogoutButton';
 import { cn } from '@/lib/utils';
 
 interface AdminSidebarProps {
     role: string;
+    registrationsCount?: number;
 }
 
-export function AdminSidebar({ role }: AdminSidebarProps) {
+export function AdminSidebar({ role, registrationsCount = 0 }: AdminSidebarProps) {
     const pathname = usePathname();
     const [isCollapsed, setIsCollapsed] = useState(false);
     const [isMobileOpen, setIsMobileOpen] = useState(false);
@@ -43,7 +45,7 @@ export function AdminSidebar({ role }: AdminSidebarProps) {
         localStorage.setItem('admin-sidebar-collapsed', String(newState));
     };
 
-    const NavItem = ({ href, icon: Icon, label }: { href: string; icon: any; label: string }) => {
+    const NavItem = ({ href, icon: Icon, label, count }: { href: string; icon: any; label: string; count?: number }) => {
         const isActive = href === '/admin'
             ? pathname === href
             : pathname === href || pathname?.startsWith(href + '/');
@@ -53,13 +55,25 @@ export function AdminSidebar({ role }: AdminSidebarProps) {
                 <Button
                     variant={isActive ? "secondary" : "ghost"}
                     className={cn(
-                        "w-full justify-start gap-3 mb-1",
+                        "w-full justify-start gap-3 mb-1 relative",
                         isCollapsed && "justify-center px-2",
                         isActive && "bg-secondary"
                     )}
                 >
                     <Icon className={cn("h-4 w-4 shrink-0", isActive && "text-primary")} />
-                    {!isCollapsed && <span>{label}</span>}
+                    {!isCollapsed && (
+                        <div className="flex flex-1 items-center justify-between">
+                            <span>{label}</span>
+                            {count !== undefined && count > 0 && (
+                                <span className="bg-blue-600 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full min-w-[1.25rem] text-center">
+                                    {count}
+                                </span>
+                            )}
+                        </div>
+                    )}
+                    {isCollapsed && count !== undefined && count > 0 && (
+                        <span className="absolute top-1 right-1 h-2 w-2 bg-blue-600 rounded-full" />
+                    )}
                 </Button>
             </Link>
         );
@@ -92,7 +106,6 @@ export function AdminSidebar({ role }: AdminSidebarProps) {
                 )}
             >
                 {/* Header / Toggle */}
-                {/* Header / Toggle */}
                 <div className={cn("border-b flex items-center transition-all", isCollapsed ? "justify-center p-2" : "justify-between p-4")}>
                     {!isCollapsed && (
                         <Link href="/admin" className="flex items-center gap-2 font-bold text-xl truncate">
@@ -118,6 +131,7 @@ export function AdminSidebar({ role }: AdminSidebarProps) {
                     <NavItem href="/admin/book" icon={BookOpen} label="Книга" />
                     <NavItem href="/admin/courses" icon={GraduationCap} label="Курсы" />
                     <NavItem href="/admin/schedule" icon={Calendar} label="Расписание" />
+                    <NavItem href="/admin/registrations" icon={Mail} label="Заявки" count={registrationsCount} />
 
                     {role === 'SUPER_ADMIN' && (
                         <NavItem href="/admin/users" icon={Users} label="Пользователи" />

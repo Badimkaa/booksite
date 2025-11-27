@@ -25,13 +25,7 @@ export default async function BookPage() {
                         {settings.description}
                     </p>
                     <div className="flex flex-col items-center gap-4">
-                        <Link href={publishedChapters.length > 0 ? `/read/${publishedChapters[0].slug}` : '#'}>
-                            <Button size="lg" className="text-lg px-8 py-6" disabled={publishedChapters.length === 0}>
-                                <BookOpen className="mr-2 h-5 w-5" />
-                                Начать читать
-                            </Button>
-                        </Link>
-                        <ContinueReading />
+                        <ContinueReading firstChapterSlug={publishedChapters.length > 0 ? publishedChapters[0].slug : undefined} />
                     </div>
                 </header>
 

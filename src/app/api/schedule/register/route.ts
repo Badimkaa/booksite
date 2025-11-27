@@ -6,9 +6,9 @@ import { v4 as uuidv4 } from 'uuid';
 export async function POST(request: Request) {
     try {
         const body = await request.json();
-        const { eventId, eventTitle, name, contact, message } = body;
+        const { eventId, eventTitle, name, email, contact, message } = body;
 
-        if (!eventId || !name || !contact) {
+        if (!eventId || !name || !email || !contact) {
             return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
         }
 
@@ -17,8 +17,11 @@ export async function POST(request: Request) {
             eventId,
             eventTitle,
             name,
+            email,
             contact,
             message,
+            status: 'new',
+            notes: null,
             createdAt: new Date(),
         };
 

@@ -101,8 +101,11 @@ model Registration {
   eventId    String
   eventTitle String
   name       String
+  email      String   @default("")
   contact    String
   message    String?
+  status     String   @default("new") // 'new', 'processing', 'completed', 'cancelled'
+  notes      String?
   createdAt  DateTime @default(now())
 }
 

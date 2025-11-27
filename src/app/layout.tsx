@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { CookieConsent } from "@/components/CookieConsent";
-import { getSettings } from "@/lib/db";
+import { getSettings, getActiveRegistrationsCount } from "@/lib/db";
 
 const inter = Inter({
   subsets: ["latin", "cyrillic"],
@@ -59,6 +59,7 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const role = await getUserRole();
+  const registrationsCount = role ? await getActiveRegistrationsCount() : 0;
 
   return (
     <html lang="ru" suppressHydrationWarning>
@@ -69,7 +70,7 @@ export default async function RootLayout({
           merriweather.variable
         )}
       >
-        {role && <AdminSidebar role={role} />}
+        {role && <AdminSidebar role={role} registrationsCount={registrationsCount} />}
         <div className="flex-1 flex flex-col min-w-0">
           <Header />
           <main className="flex-1">
