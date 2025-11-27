@@ -104,9 +104,15 @@ export default async function SuccessPage({ searchParams }: SuccessPageProps) {
                         Пожалуйста, обновите страницу через минуту.
                     </p>
 
-                    <div className="pt-4">
-                        <Link href={`/payment/success?order_id=${order_id}`}>
-                            <Button variant="outline">Обновить статус</Button>
+                    <div className="flex flex-col gap-3 pt-4 max-w-xs mx-auto">
+                        <Link href={`/payment/success?order_id=${order_id}&t=${Date.now()}`}>
+                            <Button variant="outline" className="w-full">Обновить статус</Button>
+                        </Link>
+
+                        <Link href="https://t.me/SkladnevaNatasha" target="_blank" rel="noopener noreferrer">
+                            <Button variant="ghost" className="w-full text-muted-foreground text-xs h-auto py-2 whitespace-normal">
+                                Если оплата прошла, но доступ не открылся — напишите нам
+                            </Button>
                         </Link>
                     </div>
                 </div>

@@ -15,30 +15,35 @@ export async function POST(request: Request) {
         const body = await request.text(); // Get raw body
         const signature = request.headers.get('Sign');
 
+        console.log('Payment Webhook Received:', {
+            url: request.url,
+            method: request.method,
+            signatureHeader: signature,
+            bodyLength: body.length,
+            bodyPreview: body.substring(0, 500) // Log first 500 chars
+        });
+
         if (!signature) {
+            console.error('Missing signature in webhook request');
             return NextResponse.json({ error: 'Missing signature' }, { status: 400 });
         }
 
         // Parse body to nested object
         const data = parseProdamusBody(body);
 
+        // Log parsed data for debugging (be careful with PII in prod, but helpful now)
+        console.log('Parsed Webhook Data:', JSON.stringify(data, null, 2));
+
         // Verify signature
         // We must recreate the signature from the parsed data using the same logic as sending
         const calculatedSignature = createProdamusSignature(data, PRODAMUS_SECRET_KEY);
 
-        // Note: Prodamus might send the signature in the body too, but usually it's in the header 'Sign'.
-        // Also, the signature verification must exclude the 'Sign' header itself, obviously.
-        // If 'signature' or 'sign' is in the body, it should probably be removed before verification?
-        // The documentation says "Signature is formed based on the data of the incoming POST request".
-        // If the body contains 'sign', it might need to be excluded.
-        // However, `parseProdamusBody` parses everything.
-        // Let's check if `sign` is in `data` and remove it if so.
-        // But usually headers are not in body.
-
         if (calculatedSignature !== signature) {
-            console.error('Invalid signature', { calculated: calculatedSignature, received: signature });
-            // For debugging, we might want to log the data structure
-            // console.log('Data:', JSON.stringify(data));
+            console.error('Invalid signature', {
+                calculated: calculatedSignature,
+                received: signature,
+                secretKeyLength: PRODAMUS_SECRET_KEY.length
+            });
             return NextResponse.json({ error: 'Invalid signature' }, { status: 403 });
         }
 
