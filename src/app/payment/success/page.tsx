@@ -1,5 +1,5 @@
 import { getOrder } from '@/lib/orders';
-import { getCourse } from '@/lib/db';
+import { getCourse, getCourseById } from '@/lib/db';
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
 import { Button } from '@/components/ui/Button';
@@ -90,7 +90,7 @@ export default async function SuccessPage({ searchParams }: SuccessPageProps) {
     // Re-fetch order if we might have updated it (or just use the modified object)
     // Actually we modified the `order` object in memory above, so we can just use it.
 
-    const course = await getCourse(order.courseId);
+    const course = await getCourseById(order.courseId);
 
     return (
         <div className="container mx-auto max-w-md py-20 px-4 text-center">
