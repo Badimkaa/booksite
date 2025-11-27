@@ -1,15 +1,97 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useId } from 'react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/Button';
-import { Edit, Trash2, Eye, EyeOff, ArrowUp, ArrowDown } from 'lucide-react';
+import { Edit, Eye, GripVertical } from 'lucide-react';
 import { Chapter } from '@/types';
 import { useRouter } from 'next/navigation';
-import { formatDate } from '@/lib/utils'; // Added import
+import { formatDate } from '@/lib/utils';
+import {
+    DndContext,
+    closestCenter,
+    PointerSensor,
+    useSensor,
+    useSensors,
+    DragEndEvent,
+} from '@dnd-kit/core';
+import {
+    arrayMove,
+    SortableContext,
+    useSortable,
+    verticalListSortingStrategy,
+} from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 
 interface ChapterListProps {
     initialChapters: Chapter[];
+}
+
+function SortableChapterItem({ chapter }: { chapter: Chapter }) {
+    const {
+        attributes,
+        listeners,
+        setNodeRef,
+        transform,
+        transition,
+        isDragging,
+    } = useSortable({ id: chapter.id });
+
+    const style = {
+        transform: CSS.Transform.toString(transform),
+        transition,
+        opacity: isDragging ? 0.5 : 1,
+        zIndex: isDragging ? 1 : 0,
+        position: 'relative' as const,
+    };
+
+    return (
+        <div
+            ref={setNodeRef}
+            style={style}
+            className="flex items-center justify-between p-4 border rounded-lg bg-card hover:shadow-sm transition-shadow group"
+        >
+            <div className="flex items-center gap-3">
+                {/* Drag Handle */}
+                <div
+                    {...attributes}
+                    {...listeners}
+                    className="cursor-grab active:cursor-grabbing p-1 text-muted-foreground hover:text-foreground"
+                    title="Перетащите для изменения порядка"
+                >
+                    <GripVertical className="h-5 w-5" />
+                </div>
+
+                <div>
+                    <h3 className="font-semibold text-lg">{chapter.title}</h3>
+                    <div className="flex gap-2 text-sm text-muted-foreground mt-1">
+                        <span>
+                            {chapter.published ? (
+                                <span className="text-green-600 font-medium">Опубликовано</span>
+                            ) : (
+                                <span className="text-yellow-600 font-medium">Черновик</span>
+                            )}
+                        </span>
+                        <span>•</span>
+                        <span>{formatDate(chapter.updatedAt)}</span>
+                    </div>
+                </div>
+            </div>
+
+            <div className="flex gap-2">
+                <Link href={`/read/${chapter.slug}`} target="_blank">
+                    <Button variant="ghost" size="icon" title="Просмотреть">
+                        <Eye className="h-4 w-4" />
+                    </Button>
+                </Link>
+                <Link href={`/admin/edit/${chapter.id}`}>
+                    <Button variant="outline" size="icon" title="Редактировать">
+                        <Edit className="h-4 w-4" />
+                    </Button>
+                </Link>
+            </div>
+        </div>
+    );
 }
 
 export default function ChapterList({ initialChapters }: ChapterListProps) {
@@ -18,16 +100,26 @@ export default function ChapterList({ initialChapters }: ChapterListProps) {
     const [hasChanges, setHasChanges] = useState(false);
     const router = useRouter();
 
-    const moveChapter = (index: number, direction: 'up' | 'down') => {
-        const newIndex = direction === 'up' ? index - 1 : index + 1;
-        if (newIndex < 0 || newIndex >= chapters.length) return;
+    const sensors = useSensors(
+        useSensor(PointerSensor, {
+            activationConstraint: {
+                distance: 8,
+            },
+        })
+    );
 
-        const newChapters = [...chapters];
-        const [movedChapter] = newChapters.splice(index, 1);
-        newChapters.splice(newIndex, 0, movedChapter);
+    const handleDragEnd = (event: DragEndEvent) => {
+        const { active, over } = event;
 
-        setChapters(newChapters);
-        setHasChanges(true);
+        if (over && active.id !== over.id) {
+            setChapters((items) => {
+                const oldIndex = items.findIndex((item) => item.id === active.id);
+                const newIndex = items.findIndex((item) => item.id === over.id);
+                const newItems = arrayMove(items, oldIndex, newIndex);
+                setHasChanges(true);
+                return newItems;
+            });
+        }
     };
 
     const saveOrder = async () => {
@@ -64,11 +156,15 @@ export default function ChapterList({ initialChapters }: ChapterListProps) {
         );
     }
 
+    const dndContextId = useId();
+
     return (
         <div className="space-y-4">
             {hasChanges && (
-                <div className="flex items-center justify-between p-4 bg-muted/50 rounded-lg border border-dashed">
-                    <span className="text-sm font-medium">Порядок глав изменен. Не забудьте сохранить!</span>
+                <div className="flex items-center justify-between p-4 bg-amber-50 dark:bg-amber-950/20 rounded-lg border border-amber-200 dark:border-amber-800">
+                    <span className="text-sm font-medium text-amber-900 dark:text-amber-100">
+                        💡 Порядок глав изменен. Не забудьте сохранить!
+                    </span>
                     <div className="flex gap-2">
                         <Button variant="outline" size="sm" onClick={cancelChanges} disabled={isSaving}>
                             Отмена
@@ -80,63 +176,20 @@ export default function ChapterList({ initialChapters }: ChapterListProps) {
                 </div>
             )}
 
-            {chapters.map((chapter, index) => (
-                <div
-                    key={chapter.id}
-                    className="flex items-center justify-between p-4 border rounded-lg bg-card hover:shadow-sm transition-shadow"
-                >
-                    <div>
-                        <h3 className="font-semibold text-lg">{chapter.title}</h3>
-                        <div className="flex gap-2 text-sm text-muted-foreground mt-1">
-                            <span>
-                                {chapter.published ? (
-                                    <span className="text-green-600 font-medium">Опубликовано</span>
-                                ) : (
-                                    <span className="text-yellow-600 font-medium">Черновик</span>
-                                )}
-                            </span>
-                            <span>•</span>
-                            <span>{formatDate(chapter.updatedAt)}</span>
-                        </div>
+            <DndContext
+                id={dndContextId}
+                sensors={sensors}
+                collisionDetection={closestCenter}
+                onDragEnd={handleDragEnd}
+            >
+                <SortableContext items={chapters.map(c => c.id)} strategy={verticalListSortingStrategy}>
+                    <div className="space-y-2">
+                        {chapters.map((chapter) => (
+                            <SortableChapterItem key={chapter.id} chapter={chapter} />
+                        ))}
                     </div>
-                    <div className="flex items-center gap-4">
-                        <div className="flex flex-col gap-1">
-                            <Button
-                                variant="ghost"
-                                size="icon"
-                                className="h-6 w-6"
-                                onClick={() => moveChapter(index, 'up')}
-                                disabled={index === 0 || isSaving}
-                                title="Поднять выше"
-                            >
-                                <ArrowUp className="h-4 w-4" />
-                            </Button>
-                            <Button
-                                variant="ghost"
-                                size="icon"
-                                className="h-6 w-6"
-                                onClick={() => moveChapter(index, 'down')}
-                                disabled={index === chapters.length - 1 || isSaving}
-                                title="Опустить ниже"
-                            >
-                                <ArrowDown className="h-4 w-4" />
-                            </Button>
-                        </div>
-                        <div className="flex gap-2">
-                            <Link href={`/read/${chapter.slug}`} target="_blank">
-                                <Button variant="ghost" size="icon" title="Просмотреть">
-                                    <Eye className="h-4 w-4" />
-                                </Button>
-                            </Link>
-                            <Link href={`/admin/edit/${chapter.id}`}>
-                                <Button variant="outline" size="icon" title="Редактировать">
-                                    <Edit className="h-4 w-4" />
-                                </Button>
-                            </Link>
-                        </div>
-                    </div>
-                </div>
-            ))}
+                </SortableContext>
+            </DndContext>
         </div>
     );
 }
