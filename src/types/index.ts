@@ -79,6 +79,7 @@ export interface SiteSettings {
     id: number;
     title: string;
     description: string;
+    bookTitle?: string;
 }
 
 export interface Order {

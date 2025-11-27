@@ -95,14 +95,15 @@ export async function getSettings(): Promise<SiteSettings> {
             data: {
                 id: 1,
                 title: 'Наталья',
-                description: 'Сайт Натальи'
+                description: 'Сайт Натальи',
+                bookTitle: 'Моя Книга'
             }
         });
     }
     return settings;
 }
 
-export async function saveSettings(settings: { title: string; description: string }): Promise<void> {
+export async function saveSettings(settings: { title: string; description: string; bookTitle: string }): Promise<void> {
     await prisma.siteSettings.upsert({
         where: { id: 1 },
         update: settings,

@@ -56,7 +56,7 @@ export default async function Home() {
       <section className="py-20 bg-background">
         <div className="container px-4 mx-auto">
           <div className="max-w-3xl mx-auto text-center space-y-6">
-            <h2 className="text-3xl md:text-4xl font-serif font-bold">Моя Книга</h2>
+            <h2 className="text-3xl md:text-4xl font-serif font-bold">{settings.bookTitle || "Моя Книга"}</h2>
             <p className="text-lg text-muted-foreground leading-relaxed">
               "{settings.description}" — это не просто история, это терапевтическое путешествие.
               Каждая глава открывает новые грани понимания себя.

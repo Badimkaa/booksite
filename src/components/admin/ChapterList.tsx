@@ -3,7 +3,7 @@
 import { useState, useId } from 'react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/Button';
-import { Edit, Eye, GripVertical } from 'lucide-react';
+import { Edit, Eye, GripVertical, Plus } from 'lucide-react';
 import { Chapter } from '@/types';
 import { useRouter } from 'next/navigation';
 import { formatDate } from '@/lib/utils';
@@ -25,6 +25,7 @@ import { CSS } from '@dnd-kit/utilities';
 
 interface ChapterListProps {
     initialChapters: Chapter[];
+    bookTitle?: string;
 }
 
 function SortableChapterItem({ chapter }: { chapter: Chapter }) {
@@ -94,7 +95,7 @@ function SortableChapterItem({ chapter }: { chapter: Chapter }) {
     );
 }
 
-export default function ChapterList({ initialChapters }: ChapterListProps) {
+export default function ChapterList({ initialChapters, bookTitle = 'Управление книгой' }: ChapterListProps) {
     const [chapters, setChapters] = useState(initialChapters);
     const [isSaving, setIsSaving] = useState(false);
     const [hasChanges, setHasChanges] = useState(false);
@@ -159,22 +160,34 @@ export default function ChapterList({ initialChapters }: ChapterListProps) {
     const dndContextId = useId();
 
     return (
-        <div className="space-y-4">
-            {hasChanges && (
-                <div className="flex items-center justify-between p-4 bg-amber-50 dark:bg-amber-950/20 rounded-lg border border-amber-200 dark:border-amber-800">
-                    <span className="text-sm font-medium text-amber-900 dark:text-amber-100">
-                        💡 Порядок глав изменен. Не забудьте сохранить!
-                    </span>
-                    <div className="flex gap-2">
-                        <Button variant="outline" size="sm" onClick={cancelChanges} disabled={isSaving}>
-                            Отмена
-                        </Button>
-                        <Button size="sm" onClick={saveOrder} disabled={isSaving}>
-                            {isSaving ? 'Сохранение...' : 'Сохранить порядок'}
-                        </Button>
-                    </div>
+        <div className="space-y-6">
+            <div className="flex items-center justify-between">
+                <h1 className="text-3xl font-bold font-serif">Управление книгой</h1>
+                <div className="flex gap-2">
+                    {hasChanges ? (
+                        <>
+                            <Button variant="outline" onClick={cancelChanges} disabled={isSaving}>
+                                Отмена
+                            </Button>
+                            <Button onClick={saveOrder} disabled={isSaving}>
+                                {isSaving ? 'Сохранение...' : 'Сохранить порядок'}
+                            </Button>
+                        </>
+                    ) : (
+                        <>
+                            <Link href="/admin/book/settings">
+                                <Button variant="outline">Настройки</Button>
+                            </Link>
+                            <Link href="/admin/write">
+                                <Button>
+                                    <Plus className="mr-2 h-4 w-4" />
+                                    Новая глава
+                                </Button>
+                            </Link>
+                        </>
+                    )}
                 </div>
-            )}
+            </div>
 
             <DndContext
                 id={dndContextId}

@@ -110,4 +110,5 @@ model SiteSettings {
   id          Int    @id @default(1)
   title       String
   description String
+  bookTitle   String @default("Моя Книга")
 }

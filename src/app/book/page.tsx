@@ -19,7 +19,7 @@ export default async function BookPage() {
             <div className="container mx-auto px-4 max-w-3xl">
                 <header className="text-center mb-16">
                     <h1 className="text-4xl md:text-5xl font-bold mb-6 tracking-tight">
-                        {settings.title}
+                        {settings.bookTitle || settings.title}
                     </h1>
                     <p className="text-xl md:text-2xl text-muted-foreground leading-relaxed mb-8">
                         {settings.description}
