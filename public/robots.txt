@@ -1,0 +1,23 @@
+# Allow all search engines
+User-agent: *
+
+# Allow all public pages
+Allow: /
+Allow: /courses
+Allow: /mentorship
+Allow: /schedule
+Allow: /read
+Allow: /book
+Allow: /testimonials
+Allow: /feedback
+
+# Disallow admin pages
+Disallow: /admin
+Disallow: /api
+Disallow: /login
+
+# Disallow payment processing pages
+Disallow: /payment
+
+# Sitemap location
+Sitemap: https://feelyourwoman.ru/sitemap.xml

@@ -2,6 +2,16 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/Button';
 import { CheckCircle2, Star, Heart, Users, Calendar } from 'lucide-react';
 import { SOCIAL_LINKS } from '@/config/social';
+import { generatePageMetadata } from '@/lib/metadata';
+import { Metadata } from 'next';
+
+export async function generateMetadata(): Promise<Metadata> {
+    return generatePageMetadata({
+        title: 'Наставничество "Путь к себе"',
+        description: '3-х месячное глубокое погружение в работу с телом, сознанием и состоянием. Верни себе себя в поддерживающем кругу единомышленниц.',
+        url: '/mentorship',
+    });
+}
 
 export default function MentorshipPage() {
     return (

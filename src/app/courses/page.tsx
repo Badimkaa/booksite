@@ -3,8 +3,18 @@ import { getCourses } from '@/lib/db';
 import { Button } from '@/components/ui/Button';
 import { ArrowRight, CheckCircle2 } from 'lucide-react';
 import { initiatePayment } from '@/app/actions/payment';
+import { generatePageMetadata } from '@/lib/metadata';
+import { Metadata } from 'next';
 
 export const dynamic = 'force-dynamic';
+
+export async function generateMetadata(): Promise<Metadata> {
+    return generatePageMetadata({
+        title: 'Курсы для женщин',
+        description: 'Программы, созданные с любовью и заботой о вашем здоровье. Курсы по телесной терапии, женскому здоровью и саморазвитию.',
+        url: '/courses',
+    });
+}
 
 export default async function CoursesPage() {
     const allCourses = await getCourses();

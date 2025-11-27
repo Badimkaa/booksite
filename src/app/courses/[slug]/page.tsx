@@ -4,11 +4,31 @@ import { getCourse } from '@/lib/db';
 import { Button } from '@/components/ui/Button';
 import { CheckCircle2, ArrowLeft } from 'lucide-react';
 import { initiatePayment } from '@/app/actions/payment';
+import { generatePageMetadata, generateCourseSchema } from '@/lib/metadata';
+import { StructuredData } from '@/components/StructuredData';
+import { Metadata } from 'next';
 
 interface CoursePageProps {
     params: Promise<{
         slug: string;
     }>;
+}
+
+export async function generateMetadata({ params }: CoursePageProps): Promise<Metadata> {
+    const { slug } = await params;
+    const course = await getCourse(slug);
+
+    if (!course) {
+        return {};
+    }
+
+    return generatePageMetadata({
+        title: course.title,
+        description: course.description,
+        url: `/courses/${course.slug}`,
+        image: course.image || undefined,
+        type: 'website',
+    });
 }
 
 export default async function CoursePage({ params }: CoursePageProps) {

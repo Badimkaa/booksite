@@ -9,12 +9,36 @@ import { ChevronLeft, ChevronRight, Home } from 'lucide-react';
 import ProgressSaver from '@/components/book/ProgressSaver';
 import ViewCounter from '@/components/book/ViewCounter';
 import CommentsSection from '@/components/book/CommentsSection';
+import { generatePageMetadata, generateArticleSchema } from '@/lib/metadata';
+import { StructuredData } from '@/components/StructuredData';
+import { Metadata } from 'next';
 
 interface ReadPageProps {
     params: Promise<{
         slug: string;
     }>;
 }
+
+export async function generateMetadata({ params }: ReadPageProps): Promise<Metadata> {
+    const { slug } = await params;
+    const decodedSlug = decodeURIComponent(slug);
+    const chapter = await getChapter(decodedSlug);
+
+    if (!chapter) {
+        return {};
+    }
+
+    // Extract first 160 characters from content as description
+    const plainText = chapter.content.replace(/<[^>]*>/g, '').substring(0, 160);
+
+    return generatePageMetadata({
+        title: chapter.title,
+        description: plainText,
+        url: `/read/${chapter.slug}`,
+        type: 'article',
+    });
+}
+
 
 export default async function ReadPage({ params }: ReadPageProps) {
     const { slug } = await params;
@@ -38,8 +62,17 @@ export default async function ReadPage({ params }: ReadPageProps) {
     const prevChapter = currentIndex > 0 ? publishedChapters[currentIndex - 1] : null;
     const nextChapter = currentIndex < publishedChapters.length - 1 ? publishedChapters[currentIndex + 1] : null;
 
+    const structuredData = generateArticleSchema({
+        headline: chapter.title,
+        description: chapter.content.replace(/<[^>]*>/g, '').substring(0, 160),
+        author: 'Наталья',
+        datePublished: new Date(chapter.createdAt).toISOString(),
+        dateModified: chapter.updatedAt ? new Date(chapter.updatedAt).toISOString() : new Date(chapter.createdAt).toISOString(),
+    });
+
     return (
         <div className="min-h-screen bg-background font-serif">
+            <StructuredData data={structuredData} />
             <nav className="sticky top-[57px] md:top-[53px] z-10 bg-background/80 backdrop-blur-sm border-b px-4 py-3">
                 <div className="container mx-auto max-w-3xl flex items-center justify-between">
                     <Link href="/">
