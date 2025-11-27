@@ -47,11 +47,15 @@ export async function POST(request: Request) {
             return NextResponse.json({ error: 'Invalid signature' }, { status: 403 });
         }
 
-        const { order_id, payment_status, sum, customer_email, customer_phone } = data;
+        const { order_id, order_num, payment_status, sum, customer_email, customer_phone } = data;
+
+        // Prodamus returns our custom UUID in 'order_num', and their internal ID in 'order_id'.
+        // We need to look up by our UUID.
+        const targetOrderId = order_num || order_id;
 
         // Check if payment is successful
         if (payment_status === 'success') {
-            const order = await getOrder(order_id);
+            const order = await getOrder(targetOrderId);
             if (order) {
                 // Verify amount
                 if (Math.abs(parseFloat(sum) - order.amount) < 1.0) {
@@ -61,12 +65,12 @@ export async function POST(request: Request) {
                     if (customer_phone) order.customerPhone = customer_phone;
 
                     await saveOrder(order);
-                    console.log(`Order ${order_id} marked as paid`);
+                    console.log(`Order ${targetOrderId} marked as paid`);
                 } else {
-                    console.warn(`Order ${order_id} paid amount mismatch: expected ${order.amount}, got ${sum}`);
+                    console.warn(`Order ${targetOrderId} paid amount mismatch: expected ${order.amount}, got ${sum}`);
                 }
             } else {
-                console.warn(`Order ${order_id} not found`);
+                console.warn(`Order ${targetOrderId} not found (looked for order_num: ${order_num}, order_id: ${order_id})`);
             }
         }
 
