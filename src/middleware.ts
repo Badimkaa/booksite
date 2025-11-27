@@ -3,9 +3,13 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { jwtVerify } from 'jose';
 
-const JWT_SECRET = new TextEncoder().encode(
-    process.env.JWT_SECRET || 'default-secret-change-me'
-);
+const secret = process.env.JWT_SECRET || 'default-secret-change-me';
+
+if (process.env.NODE_ENV === 'production' && secret === 'default-secret-change-me') {
+    throw new Error('JWT_SECRET must be set in production environment');
+}
+
+const JWT_SECRET = new TextEncoder().encode(secret);
 
 export async function middleware(request: NextRequest) {
     // Check if the request is for the admin area
@@ -37,5 +41,9 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-    matcher: '/admin/:path*',
+    matcher: [
+        '/admin/:path*',
+        '/api/upload',
+        '/api/users/:path*'
+    ],
 };

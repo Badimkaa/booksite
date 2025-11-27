@@ -1,9 +1,13 @@
 import { jwtVerify } from 'jose';
 import { cookies } from 'next/headers';
 
-const JWT_SECRET = new TextEncoder().encode(
-    process.env.JWT_SECRET || 'default-secret-change-me'
-);
+const secret = process.env.JWT_SECRET || 'default-secret-change-me';
+
+if (process.env.NODE_ENV === 'production' && secret === 'default-secret-change-me') {
+    throw new Error('JWT_SECRET must be set in production environment');
+}
+
+const JWT_SECRET = new TextEncoder().encode(secret);
 
 export async function isAuthenticated(): Promise<boolean> {
     const cookieStore = await cookies();

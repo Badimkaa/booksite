@@ -25,13 +25,16 @@ export async function POST(request: Request) {
     const token = cookieStore.get('auth_token')?.value;
     let username = 'Unknown';
 
-    if (token) {
-        try {
-            const { payload } = await jwtVerify(token, JWT_SECRET);
-            username = payload.username as string;
-        } catch (e) {
-            console.error('Token verification failed', e);
-        }
+    if (!token) {
+        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    try {
+        const { payload } = await jwtVerify(token, JWT_SECRET);
+        username = payload.username as string;
+    } catch (e) {
+        console.error('Token verification failed', e);
+        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     // Transliterate title to English slug
@@ -57,6 +60,19 @@ export async function POST(request: Request) {
 }
 
 export async function DELETE(request: Request) {
+    const cookieStore = await cookies();
+    const token = cookieStore.get('auth_token')?.value;
+
+    if (!token) {
+        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    try {
+        await jwtVerify(token, JWT_SECRET);
+    } catch (e) {
+        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
     const { searchParams } = new URL(request.url);
     const id = searchParams.get('id');
 

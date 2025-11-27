@@ -15,6 +15,23 @@ export async function POST(request: NextRequest) {
             );
         }
 
+        // Validate file size (max 5MB)
+        if (file.size > 5 * 1024 * 1024) {
+            return NextResponse.json(
+                { error: 'File too large (max 5MB)' },
+                { status: 400 }
+            );
+        }
+
+        // Validate file type
+        const allowedTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
+        if (!allowedTypes.includes(file.type)) {
+            return NextResponse.json(
+                { error: 'Invalid file type. Only images are allowed.' },
+                { status: 400 }
+            );
+        }
+
         const buffer = Buffer.from(await file.arrayBuffer());
         const filename = `${uuidv4()}${path.extname(file.name)}`;
         const uploadDir = path.join(process.cwd(), 'public/uploads');
