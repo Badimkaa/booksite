@@ -3,8 +3,9 @@ import { getScheduleEventById, saveScheduleEvent, deleteScheduleEvent } from '@/
 import { Button } from '@/components/ui/Button';
 import { ScheduleEvent } from '@/types';
 import { v4 as uuidv4 } from 'uuid';
-import { ArrowLeft, Save, Trash2 } from 'lucide-react';
+import { ArrowLeft, Save } from 'lucide-react';
 import Link from 'next/link';
+import { DeleteButton } from '@/components/admin/DeleteButton';
 
 interface EventEditorProps {
     params: Promise<{
@@ -152,18 +153,12 @@ export default async function EventEditorPage({ params }: EventEditorProps) {
                 </div>
 
                 <div className="flex items-center justify-between pt-4 border-t">
-                    {!isNew && (
-                        <Button
-                            type="button"
-                            variant="destructive"
-                            formAction={deleteAction}
-                            className="gap-2"
-                        >
-                            <Trash2 className="h-4 w-4" />
-                            Удалить событие
-                        </Button>
-                    )}
-                    <div className="flex gap-4 ml-auto">
+                    <div>
+                        {!isNew && (
+                            <DeleteButton onDelete={deleteAction} label="Удалить событие" />
+                        )}
+                    </div>
+                    <div className="flex gap-4">
                         <Link href="/admin/schedule">
                             <Button type="button" variant="outline">Отмена</Button>
                         </Link>

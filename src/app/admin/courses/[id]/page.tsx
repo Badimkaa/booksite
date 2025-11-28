@@ -4,9 +4,10 @@ import { getCourseById, saveCourse, deleteCourse } from '@/lib/db';
 import { Button } from '@/components/ui/Button';
 import { Course } from '@/types';
 import { v4 as uuidv4 } from 'uuid';
-import { ArrowLeft, Save, Trash2 } from 'lucide-react';
+import { ArrowLeft, Save } from 'lucide-react';
 import { writeFile, unlink } from 'fs/promises';
 import path from 'path';
+import { DeleteButton } from '@/components/admin/DeleteButton';
 
 interface CourseEditorProps {
     params: Promise<{
@@ -215,18 +216,12 @@ export default async function CourseEditorPage({ params }: CourseEditorProps) {
                 </div>
 
                 <div className="flex items-center justify-between pt-4 border-t">
-                    {!isNew && (
-                        <Button
-                            type="button"
-                            variant="destructive"
-                            formAction={deleteAction}
-                            className="gap-2"
-                        >
-                            <Trash2 className="h-4 w-4" />
-                            Удалить курс
-                        </Button>
-                    )}
-                    <div className="flex gap-4 ml-auto">
+                    <div>
+                        {!isNew && (
+                            <DeleteButton onDelete={deleteAction} label="Удалить курс" />
+                        )}
+                    </div>
+                    <div className="flex gap-4">
                         <Link href="/admin/courses">
                             <Button type="button" variant="outline">Отмена</Button>
                         </Link>
