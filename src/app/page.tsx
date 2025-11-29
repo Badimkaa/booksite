@@ -58,7 +58,7 @@ export default async function Home() {
           <div className="max-w-3xl mx-auto text-center space-y-6">
             <h2 className="text-3xl md:text-4xl font-serif font-bold">{settings.bookTitle || "Моя Книга"}</h2>
             <p className="text-lg text-muted-foreground leading-relaxed">
-              "{settings.description}" — это не просто история, это терапевтическое путешествие.
+              &quot;{settings.description}&quot; — это не просто история, это терапевтическое путешествие.
               Каждая глава открывает новые грани понимания себя.
             </p>
             <div className="pt-6">
@@ -137,7 +137,7 @@ export default async function Home() {
       {/* Mentorship Teaser */}
       <section className="py-20 bg-primary text-primary-foreground">
         <div className="container px-4 mx-auto text-center max-w-3xl">
-          <h2 className="text-3xl md:text-4xl font-serif font-bold mb-6">Наставничество "Путь к себе"</h2>
+          <h2 className="text-3xl md:text-4xl font-serif font-bold mb-6">Наставничество &quot;Путь к себе&quot;</h2>
           <p className="text-xl opacity-90 mb-8 leading-relaxed">
             3-х месячное глубокое погружение в работу с телом и сознанием.
             Персональное сопровождение и поддержка группы единомышленниц.

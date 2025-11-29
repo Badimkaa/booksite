@@ -1,7 +1,6 @@
 import Link from 'next/link';
 import { getChapters, getCourses, getSchedule, getUsers } from '@/lib/db';
-import { Button } from '@/components/ui/Button';
-import { Plus, BookOpen, Users, Calendar, Settings, LogOut, GraduationCap, ArrowRight } from 'lucide-react';
+import { BookOpen, Users, Calendar, GraduationCap, ArrowRight } from 'lucide-react';
 import { formatDate } from '@/lib/utils';
 import { cookies } from 'next/headers';
 import { jwtVerify } from 'jose';

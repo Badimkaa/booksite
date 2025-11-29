@@ -11,12 +11,12 @@ export default function ContinueReading({ firstChapterSlug }: { firstChapterSlug
     const [mounted, setMounted] = useState(false);
 
     useEffect(() => {
-        setMounted(true);
         const slug = localStorage.getItem('lastReadSlug');
         const title = localStorage.getItem('lastReadTitle');
         if (slug && title) {
             setLastRead({ slug, title });
         }
+        setMounted(true);
     }, []);
 
     if (!mounted) return null;

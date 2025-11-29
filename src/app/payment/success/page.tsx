@@ -1,9 +1,8 @@
 import { getOrder } from '@/lib/orders';
-import { getCourse, getCourseById } from '@/lib/db';
-import { redirect } from 'next/navigation';
+import { getCourseById } from '@/lib/db';
 import Link from 'next/link';
 import { Button } from '@/components/ui/Button';
-import { CheckCircle, Loader2, AlertCircle } from 'lucide-react';
+import { CheckCircle, Loader2 } from 'lucide-react';
 
 interface SuccessPageProps {
     searchParams: Promise<{
@@ -19,7 +18,7 @@ export default async function SuccessPage({ searchParams }: SuccessPageProps) {
         return <div>Invalid order</div>;
     }
 
-    let order = await getOrder(order_id);
+    const order = await getOrder(order_id);
 
     if (!order) {
         return <div>Order not found</div>;
@@ -30,7 +29,7 @@ export default async function SuccessPage({ searchParams }: SuccessPageProps) {
         const PRODAMUS_SECRET_KEY = process.env.PRODAMUS_SECRET_KEY;
         if (PRODAMUS_SECRET_KEY) {
             const signature = otherParams._payform_sign as string;
-            const paramsToSign: any = { order_id, ...otherParams };
+            const paramsToSign: Record<string, string | string[] | undefined> = { order_id, ...otherParams };
             delete paramsToSign._payform_sign;
 
             // Prodamus might send stringified numbers, ensure we match the type if needed.
@@ -58,7 +57,7 @@ export default async function SuccessPage({ searchParams }: SuccessPageProps) {
             } else {
                 // Try fallback: sign only _payform_ params (excluding _payform_sign)
                 // Prodamus might not sign the order_id if it was just in the URL we provided
-                const payformParams: any = {};
+                const payformParams: Record<string, string | string[] | undefined> = {};
                 Object.keys(otherParams).forEach(key => {
                     if (key.startsWith('_payform_') && key !== '_payform_sign') {
                         payformParams[key] = otherParams[key];
@@ -101,7 +100,7 @@ export default async function SuccessPage({ searchParams }: SuccessPageProps) {
                     </div>
                     <h1 className="text-2xl font-bold font-serif">Оплата прошла успешно!</h1>
                     <p className="text-muted-foreground">
-                        Спасибо за покупку курса "{course?.title}".
+                        Спасибо за покупку курса &quot;{course?.title}&quot;.
                     </p>
 
                     <div className="bg-muted/30 p-6 rounded-lg border text-left">

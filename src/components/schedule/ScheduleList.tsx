@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { ScheduleEvent } from '@/types';
 import { Button } from '@/components/ui/Button';
-import { Calendar, MapPin, Video, Clock } from 'lucide-react';
+import { MapPin, Video, Clock } from 'lucide-react';
 import { formatDate } from '@/lib/utils';
 import RegistrationModal from '@/components/schedule/RegistrationModal';
 

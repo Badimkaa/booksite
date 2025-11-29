@@ -35,8 +35,12 @@ export async function POST(request: Request) {
         console.log('Parsed Webhook Data:', JSON.stringify(data, null, 2));
 
         // Verify signature
+        if (typeof data !== 'object' || data === null) {
+            console.error('Parsed data is not an object:', data);
+            return NextResponse.json({ error: 'Invalid data format' }, { status: 400 });
+        }
         // We must recreate the signature from the parsed data using the same logic as sending
-        const calculatedSignature = createProdamusSignature(data, PRODAMUS_SECRET_KEY);
+        const calculatedSignature = createProdamusSignature(data as Record<string, unknown>, PRODAMUS_SECRET_KEY);
 
         if (calculatedSignature !== signature) {
             console.error('Invalid signature', {
@@ -47,7 +51,7 @@ export async function POST(request: Request) {
             return NextResponse.json({ error: 'Invalid signature' }, { status: 403 });
         }
 
-        const { order_id, order_num, payment_status, sum, customer_email, customer_phone } = data;
+        const { order_id, order_num, payment_status, sum, customer_email, customer_phone } = data as { [key: string]: string };
 
         // Prodamus returns our custom UUID in 'order_num', and their internal ID in 'order_id'.
         // We need to look up by our UUID.

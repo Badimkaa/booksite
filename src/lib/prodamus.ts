@@ -1,6 +1,6 @@
 import { createHmac } from 'crypto';
 
-export function createProdamusSignature(data: any, secretKey: string): string {
+export function createProdamusSignature(data: Record<string, unknown>, secretKey: string): string {
     // 1. Sort keys recursively
     const sortedData = sortObjectKeys(data);
 
@@ -15,44 +15,46 @@ export function createProdamusSignature(data: any, secretKey: string): string {
     return hmac.digest('hex');
 }
 
-export function sortObjectKeys(obj: any): any {
+type JsonValue = string | number | boolean | null | JsonValue[] | { [key: string]: JsonValue };
+
+export function sortObjectKeys(obj: unknown): JsonValue {
     if (Array.isArray(obj)) {
         return obj.map(sortObjectKeys);
     } else if (typeof obj === 'object' && obj !== null) {
-        return Object.keys(obj)
+        return Object.keys(obj as { [key: string]: unknown })
             .sort()
             .reduce((acc, key) => {
-                acc[key] = sortObjectKeys(obj[key]);
+                acc[key] = sortObjectKeys((obj as { [key: string]: unknown })[key]);
                 return acc;
-            }, {} as any);
+            }, {} as { [key: string]: JsonValue });
     }
-    return obj;
+    return obj as JsonValue;
 }
 
-export function flattenObject(obj: any, prefix = ''): Record<string, string> {
-    return Object.keys(obj).reduce((acc: any, k) => {
+export function flattenObject(obj: Record<string, unknown>, prefix = ''): Record<string, string> {
+    return Object.keys(obj).reduce((acc: Record<string, string>, k) => {
         const pre = prefix.length ? `${prefix}[${k}]` : k;
-        if (typeof obj[k] === 'object' && obj[k] !== null && !Array.isArray(obj[k])) {
-            Object.assign(acc, flattenObject(obj[k], pre));
-        } else if (Array.isArray(obj[k])) {
-            obj[k].forEach((v: any, i: number) => {
-                Object.assign(acc, flattenObject(v, `${pre}[${i}]`));
+        const val = obj[k];
+        if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+            Object.assign(acc, flattenObject(val as Record<string, unknown>, pre));
+        } else if (Array.isArray(val)) {
+            val.forEach((v: unknown, i: number) => {
+                Object.assign(acc, flattenObject({ [i]: v } as Record<string, unknown>, pre));
             });
         } else {
-            acc[pre] = obj[k];
+            acc[pre] = String(val);
         }
         return acc;
     }, {});
 }
 
-export function parseProdamusBody(body: string): any {
+export function parseProdamusBody(body: string): JsonValue {
     const params = new URLSearchParams(body);
-    const data: any = {};
+    const data: { [key: string]: unknown } = {};
 
     params.forEach((value, key) => {
-        // Handle nested keys like products[0][name]
         const parts = key.split('[').map(p => p.replace(']', ''));
-        let current = data;
+        let current: { [key: string]: unknown } = data;
 
         for (let i = 0; i < parts.length; i++) {
             const part = parts[i];
@@ -62,61 +64,43 @@ export function parseProdamusBody(body: string): any {
                 current[part] = value;
             } else {
                 const nextPart = parts[i + 1];
-                // Check if next part is an index (integer)
                 const isIndex = /^\d+$/.test(nextPart);
 
                 if (!current[part]) {
                     current[part] = isIndex ? [] : {};
                 }
-
-                // If we are accessing an array index, ensure the array is large enough?
-                // Or just treat it as an object for now and convert to array later?
-                // PHP treats arrays and dicts similarly.
-                // But for JSON signature, arrays must be arrays.
-
-                current = current[part];
+                current = current[part] as { [key: string]: unknown };
             }
         }
     });
 
-    // Post-process to convert objects with numeric keys to arrays?
-    // Prodamus PHP SDK likely parses `products[0][name]` into an array.
-    // My `sortObjectKeys` handles arrays.
-    // But `data` constructed above might have objects with numeric keys instead of arrays.
-    // Let's implement a recursive fix.
     return convertNumericKeysToArrays(data);
 }
 
-function convertNumericKeysToArrays(obj: any): any {
+function convertNumericKeysToArrays(obj: unknown): JsonValue {
     if (typeof obj !== 'object' || obj === null) {
-        return obj;
+        return obj as JsonValue;
     }
 
-    // Check if object keys are all numeric and sequential starting from 0?
-    // Or just numeric?
-    // PHP arrays are ordered maps.
-    // If keys are "0", "1", "2"... it should be an array.
-    const keys = Object.keys(obj);
+    if (Array.isArray(obj)) {
+        return obj.map(convertNumericKeysToArrays);
+    }
+
+    const keys = Object.keys(obj as { [key: string]: unknown });
     const isArrayLike = keys.length > 0 && keys.every(k => /^\d+$/.test(k));
 
     if (isArrayLike) {
-        // Convert to array
-        const arr = [];
-        for (const key of keys) {
-            arr[parseInt(key)] = convertNumericKeysToArrays(obj[key]);
+        const arr: JsonValue[] = [];
+        for (const key of keys.sort((a, b) => parseInt(a) - parseInt(b))) {
+            arr.push(convertNumericKeysToArrays((obj as { [key: string]: unknown })[key]));
         }
-        // Filter out empty slots if any? No, PHP arrays can be sparse but usually aren't here.
-        // But `arr` will be a sparse array if keys are not sequential.
-        // Let's assume sequential for Prodamus products.
-        // Actually, `Object.values` might be safer if we don't care about index order matching exactly if they are sorted.
-        // But `products[0]` implies index 0.
         return arr;
     }
 
-    // Recursively convert children
+    const newObj: { [key: string]: JsonValue } = {};
     for (const key of keys) {
-        obj[key] = convertNumericKeysToArrays(obj[key]);
+        newObj[key] = convertNumericKeysToArrays((obj as { [key: string]: unknown })[key]);
     }
 
-    return obj;
+    return newObj;
 }

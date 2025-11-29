@@ -12,7 +12,7 @@ export async function registerView(chapterId: string) {
     if (viewedChaptersCookie) {
         try {
             viewedChapters = JSON.parse(viewedChaptersCookie.value);
-        } catch (e) {
+        } catch {
             // Invalid cookie, ignore
         }
     }

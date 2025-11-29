@@ -1,8 +1,8 @@
 
-const fs = require('fs');
-const path = require('path');
-const bcrypt = require('bcryptjs');
-const { v4: uuidv4 } = require('uuid');
+import fs from 'fs';
+import path from 'path';
+import bcrypt from 'bcryptjs';
+import { v4 as uuidv4 } from 'uuid';
 
 const dataDir = path.join(process.cwd(), 'data');
 const usersFile = path.join(dataDir, 'users.json');

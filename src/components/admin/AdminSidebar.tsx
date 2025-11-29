@@ -21,6 +21,40 @@ import {
 import { LogoutButton } from '@/components/admin/LogoutButton';
 import { cn } from '@/lib/utils';
 
+const NavItem = ({ href, icon: Icon, label, count, pathname, isCollapsed }: { href: string; icon: React.ElementType; label: string; count?: number; pathname: string; isCollapsed: boolean }) => {
+    const isActive = href === '/admin'
+        ? pathname === href
+        : pathname === href || pathname.startsWith(href + '/');
+
+    return (
+        <Link href={href} title={isCollapsed ? label : undefined}>
+            <Button
+                variant={isActive ? "secondary" : "ghost"}
+                className={cn(
+                    "w-full justify-start gap-3 mb-1 relative",
+                    isCollapsed && "justify-center px-2",
+                    isActive && "bg-secondary"
+                )}
+            >
+                <Icon className={cn("h-4 w-4 shrink-0", isActive && "text-primary")} />
+                {!isCollapsed && (
+                    <div className="flex flex-1 items-center justify-between">
+                        <span>{label}</span>
+                        {count !== undefined && count > 0 && (
+                            <span className="bg-blue-600 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full min-w-[1.25rem] text-center">
+                                {count}
+                            </span>
+                        )}
+                    </div>
+                )}
+                {isCollapsed && count !== undefined && count > 0 && (
+                    <span className="absolute top-1 right-1 h-2 w-2 bg-blue-600 rounded-full" />
+                )}
+            </Button>
+        </Link>
+    );
+};
+
 interface AdminSidebarProps {
     role: string;
     registrationsCount?: number;
@@ -43,40 +77,6 @@ export function AdminSidebar({ role, registrationsCount = 0 }: AdminSidebarProps
         const newState = !isCollapsed;
         setIsCollapsed(newState);
         localStorage.setItem('admin-sidebar-collapsed', String(newState));
-    };
-
-    const NavItem = ({ href, icon: Icon, label, count }: { href: string; icon: any; label: string; count?: number }) => {
-        const isActive = href === '/admin'
-            ? pathname === href
-            : pathname === href || pathname?.startsWith(href + '/');
-
-        return (
-            <Link href={href} title={isCollapsed ? label : undefined}>
-                <Button
-                    variant={isActive ? "secondary" : "ghost"}
-                    className={cn(
-                        "w-full justify-start gap-3 mb-1 relative",
-                        isCollapsed && "justify-center px-2",
-                        isActive && "bg-secondary"
-                    )}
-                >
-                    <Icon className={cn("h-4 w-4 shrink-0", isActive && "text-primary")} />
-                    {!isCollapsed && (
-                        <div className="flex flex-1 items-center justify-between">
-                            <span>{label}</span>
-                            {count !== undefined && count > 0 && (
-                                <span className="bg-blue-600 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full min-w-[1.25rem] text-center">
-                                    {count}
-                                </span>
-                            )}
-                        </div>
-                    )}
-                    {isCollapsed && count !== undefined && count > 0 && (
-                        <span className="absolute top-1 right-1 h-2 w-2 bg-blue-600 rounded-full" />
-                    )}
-                </Button>
-            </Link>
-        );
     };
 
     return (
@@ -127,25 +127,25 @@ export function AdminSidebar({ role, registrationsCount = 0 }: AdminSidebarProps
 
                 {/* Navigation */}
                 <nav className="flex-1 p-2 overflow-y-auto">
-                    <NavItem href="/admin" icon={LayoutDashboard} label="Дашборд" />
-                    <NavItem href="/admin/book" icon={BookOpen} label="Книга" />
-                    <NavItem href="/admin/courses" icon={GraduationCap} label="Курсы" />
-                    <NavItem href="/admin/schedule" icon={Calendar} label="Расписание" />
-                    <NavItem href="/admin/registrations" icon={Mail} label="Заявки" count={registrationsCount} />
+                    <NavItem href="/admin" icon={LayoutDashboard} label="Дашборд" pathname={pathname} isCollapsed={isCollapsed} />
+                    <NavItem href="/admin/book" icon={BookOpen} label="Книга" pathname={pathname} isCollapsed={isCollapsed} />
+                    <NavItem href="/admin/courses" icon={GraduationCap} label="Курсы" pathname={pathname} isCollapsed={isCollapsed} />
+                    <NavItem href="/admin/schedule" icon={Calendar} label="Расписание" pathname={pathname} isCollapsed={isCollapsed} />
+                    <NavItem href="/admin/registrations" icon={Mail} label="Заявки" count={registrationsCount} pathname={pathname} isCollapsed={isCollapsed} />
 
                     {role === 'SUPER_ADMIN' && (
-                        <NavItem href="/admin/users" icon={Users} label="Пользователи" />
+                        <NavItem href="/admin/users" icon={Users} label="Пользователи" pathname={pathname} isCollapsed={isCollapsed} />
                     )}
 
                     <div className="my-2 border-t mx-2" />
 
-                    <NavItem href="/admin/settings" icon={Settings} label="Настройки" />
-                    <NavItem href="/admin/profile" icon={User} label="Профиль" />
+                    <NavItem href="/admin/settings" icon={Settings} label="Настройки" pathname={pathname} isCollapsed={isCollapsed} />
+                    <NavItem href="/admin/profile" icon={User} label="Профиль" pathname={pathname} isCollapsed={isCollapsed} />
                 </nav>
 
                 {/* Footer Actions */}
                 <div className="p-2 border-t space-y-1">
-                    <NavItem href="/" icon={Home} label="На сайт" />
+                    <NavItem href="/" icon={Home} label="На сайт" pathname={pathname} isCollapsed={isCollapsed} />
 
                     <div className={cn("flex", isCollapsed ? "justify-center" : "px-4 py-2")}>
                         <LogoutButton collapsed={isCollapsed} />

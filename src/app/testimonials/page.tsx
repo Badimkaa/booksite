@@ -31,7 +31,7 @@ export default async function TestimonialsPage() {
                                 </div>
                             </div>
                             <p className="text-muted-foreground leading-relaxed italic">
-                                "{testimonial.text}"
+                                &quot;{testimonial.text}&quot;
                             </p>
                             <div className="mt-4 text-xs text-muted-foreground text-right">
                                 {formatDate(testimonial.date)}
