@@ -1,11 +1,11 @@
 'use client';
 
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { Registration, ScheduleEvent } from '@/types';
 import RegistrationCard from '@/components/admin/RegistrationCard';
 import { Button } from '@/components/ui/Button';
-import { ChevronLeft, Users, Mail, ChevronDown, ChevronUp } from 'lucide-react';
+import { ChevronLeft, Users, ChevronDown, ChevronUp } from 'lucide-react';
 
 interface RegistrationsManagerProps {
     initialRegistrations: Registration[];
@@ -17,13 +17,6 @@ export default function RegistrationsManager({ initialRegistrations, schedule }:
     const eventFromUrl = searchParams.get('event');
     const [selectedEvent, setSelectedEvent] = useState<string | null>(eventFromUrl);
     const [showPast, setShowPast] = useState(false);
-
-    // Auto-select event from URL on mount
-    useEffect(() => {
-        if (eventFromUrl) {
-            setSelectedEvent(eventFromUrl);
-        }
-    }, [eventFromUrl]);
 
     // Create a map of eventId to event date
     const eventDates = useMemo(() => {

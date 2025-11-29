@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Comment } from '@/types';
 import { Button } from '@/components/ui/Button';
 import { MessageSquare, Send, User as UserIcon } from 'lucide-react';
@@ -18,11 +18,7 @@ export default function CommentsSection({ chapterId, isAdmin }: CommentsSectionP
     const [username, setUsername] = useState('');
     const [submitting, setSubmitting] = useState(false);
 
-    useEffect(() => {
-        fetchComments();
-    }, [chapterId]);
-
-    async function fetchComments() {
+    const fetchComments = useCallback(async () => {
         try {
             const res = await fetch(`/api/comments?chapterId=${chapterId}`);
             if (res.ok) {
@@ -34,7 +30,11 @@ export default function CommentsSection({ chapterId, isAdmin }: CommentsSectionP
         } finally {
             setLoading(false);
         }
-    }
+    }, [chapterId]);
+
+    useEffect(() => {
+        fetchComments();
+    }, [fetchComments]);
 
     async function handleSubmit(e: React.FormEvent) {
         e.preventDefault();

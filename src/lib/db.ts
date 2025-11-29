@@ -117,7 +117,7 @@ export async function getCourses(): Promise<Course[]> {
         orderBy: { order: 'asc' }
     });
     // Parse features from JSON string
-    return courses.map((c: any): Course => ({
+    return courses.map((c): Course => ({
         ...c,
         features: JSON.parse(c.features) as string[]
     }));
@@ -141,7 +141,7 @@ export async function getCourse(slug: string): Promise<Course | null> {
     } as Course;
 }
 
-export async function saveCourse(course: any): Promise<void> {
+export async function saveCourse(course: Partial<Course> & { id: string }): Promise<void> {
     await prisma.course.upsert({
         where: { id: course.id },
         update: {
