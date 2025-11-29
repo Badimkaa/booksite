@@ -2,7 +2,6 @@ import { NextResponse } from 'next/server';
 import { getComments, saveComment } from '@/lib/db';
 import { Comment } from '@/types';
 import { v4 as uuidv4 } from 'uuid';
-import { cookies } from 'next/headers';
 import { isAuthenticated } from '@/lib/auth';
 
 export async function GET(request: Request) {

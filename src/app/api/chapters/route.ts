@@ -69,7 +69,7 @@ export async function DELETE(request: Request) {
 
     try {
         await jwtVerify(token, JWT_SECRET);
-    } catch (e) {
+    } catch {
         return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 

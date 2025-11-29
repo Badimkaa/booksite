@@ -31,6 +31,7 @@ export async function GET() {
 
     const users = await getUsers();
     // Don't return password hashes
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const safeUsers = users.map(({ passwordHash, ...user }) => user);
     return NextResponse.json(safeUsers);
 }
@@ -64,6 +65,7 @@ export async function POST(request: Request) {
 
         await saveUser(newUser);
 
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const { passwordHash: _, ...safeUser } = newUser;
         return NextResponse.json(safeUser);
     } catch (error) {

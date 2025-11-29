@@ -95,7 +95,7 @@ export default function RegistrationCard({ registration }: { registration: Regis
                     {registration.message && (
                         <div className="flex items-start gap-2 bg-muted/20 p-3 rounded-lg">
                             <MessageSquare className="h-4 w-4 text-muted-foreground mt-0.5 shrink-0" />
-                            <p className="text-muted-foreground italic">"{registration.message}"</p>
+                            <p className="text-muted-foreground italic">&quot;{registration.message}&quot;</p>
                         </div>
                     )}
                 </div>

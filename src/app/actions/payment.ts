@@ -23,9 +23,9 @@ export async function initiatePayment(courseId: string) {
         }
 
         const course = await getCourseById(courseId);
-        if (!course || !course.price) {
-            console.error('Course not found or invalid:', { courseId, hasCourse: !!course, price: course?.price });
-            throw new Error('Course not found or price not set');
+        if (!course || !course.price || !course.isActive) {
+            console.error('Course not found or invalid:', { courseId, hasCourse: !!course, price: course?.price, isActive: course?.isActive });
+            throw new Error('Course is not available for purchase');
         }
 
         const orderId = uuidv4();

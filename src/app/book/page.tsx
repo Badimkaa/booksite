@@ -1,7 +1,5 @@
 import Link from 'next/link';
 import { getChapters, getSettings } from '@/lib/db';
-import { Button } from '@/components/ui/Button';
-import { BookOpen, Lock } from 'lucide-react';
 import { formatDate } from '@/lib/utils';
 import ContinueReading from '@/components/book/ContinueReading';
 

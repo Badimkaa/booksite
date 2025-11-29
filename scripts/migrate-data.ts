@@ -9,7 +9,7 @@ async function readJson(filename: string) {
     try {
         const content = await fs.readFile(path.join(dataDir, filename), 'utf8');
         return JSON.parse(content);
-    } catch (e) {
+    } catch {
         return [];
     }
 }
@@ -196,7 +196,7 @@ async function main() {
             }
         });
         console.log('Migrated settings.');
-    } catch (e) {
+    } catch {
         console.log('No settings found or error migrating settings.');
     }
 }

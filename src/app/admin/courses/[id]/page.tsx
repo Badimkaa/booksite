@@ -46,7 +46,6 @@ export default async function CourseEditorPage({ params }: CourseEditorProps) {
 
         const title = formData.get('title') as string;
         const description = formData.get('description') as string;
-        const price = formData.get('price') ? Number(formData.get('price')) : undefined;
         const slug = formData.get('slug') as string;
         const accessContent = formData.get('accessContent') as string;
         const featuresString = formData.get('features') as string;

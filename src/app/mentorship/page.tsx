@@ -1,6 +1,5 @@
-import Link from 'next/link';
 import { Button } from '@/components/ui/Button';
-import { CheckCircle2, Star, Heart, Users, Calendar } from 'lucide-react';
+import { Star, Heart, Users, Calendar } from 'lucide-react';
 import { SOCIAL_LINKS } from '@/config/social';
 import { generatePageMetadata } from '@/lib/metadata';
 import { Metadata } from 'next';
