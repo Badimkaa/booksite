@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Button } from '@/components/ui/Button';
@@ -62,16 +62,13 @@ interface AdminSidebarProps {
 
 export function AdminSidebar({ role, registrationsCount = 0 }: AdminSidebarProps) {
     const pathname = usePathname();
-    const [isCollapsed, setIsCollapsed] = useState(false);
-    const [isMobileOpen, setIsMobileOpen] = useState(false);
-
-    // Persist collapsed state
-    useEffect(() => {
-        const stored = localStorage.getItem('admin-sidebar-collapsed');
-        if (stored) {
-            setIsCollapsed(stored === 'true');
+    const [isCollapsed, setIsCollapsed] = useState(() => {
+        if (typeof window !== 'undefined') {
+            return localStorage.getItem('admin-sidebar-collapsed') === 'true';
         }
-    }, []);
+        return false;
+    });
+    const [isMobileOpen, setIsMobileOpen] = useState(false);
 
     const toggleCollapse = () => {
         const newState = !isCollapsed;

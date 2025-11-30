@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/Button';
 import { BookOpen } from 'lucide-react';
@@ -19,7 +19,9 @@ export default function ContinueReading({ firstChapterSlug }: { firstChapterSlug
         setMounted(true);
     }, []);
 
-    if (!mounted) return null;
+    if (!lastRead && !firstChapterSlug) {
+        return null;
+    }
 
     if (lastRead) {
         return (
