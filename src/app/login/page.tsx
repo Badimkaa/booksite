@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
+import { LogIn } from 'lucide-react';
 
 export default function LoginPage() {
     const [username, setUsername] = useState('');
@@ -66,7 +67,8 @@ export default function LoginPage() {
                     )}
 
                     <div>
-                        <Button type="submit" className="w-full">
+                        <Button type="submit" className="w-full h-12 text-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-transform hover:scale-105 shadow-lg mt-6 flex items-center justify-center">
+                            <LogIn className="mr-2 h-5 w-5" />
                             Войти
                         </Button>
                     </div>
