@@ -10,14 +10,12 @@ export function CookieConsent() {
     const [isMounted, setIsMounted] = useState(false);
 
     useEffect(() => {
-        setIsMounted(true);
-        // Check if user has already consented
         const consent = localStorage.getItem("cookie-consent");
         if (!consent) {
-            // Show banner after a small delay for better UX
             const timer = setTimeout(() => setIsVisible(true), 1000);
             return () => clearTimeout(timer);
         }
+        setIsMounted(true);
     }, []);
 
     const handleAccept = () => {

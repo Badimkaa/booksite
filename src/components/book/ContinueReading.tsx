@@ -7,16 +7,17 @@ import { Button } from '@/components/ui/Button';
 import { BookOpen } from 'lucide-react';
 
 export default function ContinueReading({ firstChapterSlug }: { firstChapterSlug?: string }) {
-    const [lastRead] = useState<{ slug: string; title: string } | null>(() => {
-        if (typeof window !== 'undefined') {
-            const slug = localStorage.getItem('lastReadSlug');
-            const title = localStorage.getItem('lastReadTitle');
-            if (slug && title) {
-                return { slug, title };
-            }
+    const [lastRead, setLastRead] = useState<{ slug: string; title: string } | null>(null);
+    const [mounted, setMounted] = useState(false);
+
+    useEffect(() => {
+        const slug = localStorage.getItem('lastReadSlug');
+        const title = localStorage.getItem('lastReadTitle');
+        if (slug && title) {
+            setLastRead({ slug, title });
         }
-        return null;
-    });
+        setMounted(true);
+    }, []);
 
     if (!lastRead && !firstChapterSlug) {
         return null;
