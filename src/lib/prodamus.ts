@@ -77,7 +77,7 @@ export function parseProdamusBody(body: string): JsonValue {
     return convertNumericKeysToArrays(data);
 }
 
-function convertNumericKeysToArrays(obj: unknown): JsonValue {
+export function convertNumericKeysToArrays(obj: unknown): JsonValue {
     if (typeof obj !== 'object' || obj === null) {
         return obj as JsonValue;
     }
