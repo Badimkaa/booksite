@@ -50,11 +50,11 @@ export function flattenObject(obj: Record<string, unknown>, prefix = ''): Record
 
 export function parseProdamusBody(body: string): JsonValue {
     const params = new URLSearchParams(body);
-    const data: { [key: string]: any } = {};
+    const data: { [key: string]: unknown } = {};
 
     params.forEach((value, key) => {
         const parts = key.split('[').map(p => p.replace(']', ''));
-        let current: any = data;
+        let current: { [key: string]: unknown } = data;
 
         for (let i = 0; i < parts.length; i++) {
             const part = parts[i];
@@ -69,7 +69,7 @@ export function parseProdamusBody(body: string): JsonValue {
                 if (!current[part]) {
                     current[part] = isIndex ? [] : {};
                 }
-                current = current[part];
+                current = current[part] as { [key: string]: unknown };
             }
         }
     });

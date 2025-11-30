@@ -95,7 +95,7 @@ function SortableChapterItem({ chapter }: { chapter: Chapter }) {
     );
 }
 
-export default function ChapterList({ initialChapters, bookTitle = 'Управление книгой' }: ChapterListProps) {
+export default function ChapterList({ initialChapters }: ChapterListProps) {
     const [chapters, setChapters] = useState(initialChapters);
     const [isSaving, setIsSaving] = useState(false);
     const [hasChanges, setHasChanges] = useState(false);

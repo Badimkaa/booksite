@@ -4,8 +4,7 @@ import { getCourse } from '@/lib/db';
 import { Button } from '@/components/ui/Button';
 import { CheckCircle2, ArrowLeft } from 'lucide-react';
 import { initiatePayment } from '@/app/actions/payment';
-import { generatePageMetadata, generateCourseSchema } from '@/lib/metadata';
-import { StructuredData } from '@/components/StructuredData';
+import { generatePageMetadata } from '@/lib/metadata';
 import { Metadata } from 'next';
 
 interface CoursePageProps {

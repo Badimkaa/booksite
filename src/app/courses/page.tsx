@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { getCourses } from '@/lib/db';
 import { Button } from '@/components/ui/Button';
-import { ArrowRight, CheckCircle2 } from 'lucide-react';
+import { CheckCircle2 } from 'lucide-react';
 import { initiatePayment } from '@/app/actions/payment';
 import { generatePageMetadata } from '@/lib/metadata';
 import { Metadata } from 'next';

@@ -142,28 +142,30 @@ export async function getCourse(slug: string): Promise<Course | null> {
 }
 
 export async function saveCourse(course: Partial<Course> & { id: string }): Promise<void> {
+    const { id, title, description, slug, ...rest } = course;
+
+    if (!title || !description || !slug) {
+        throw new Error('Title, description, and slug are required to save a course.');
+    }
+
+    const courseData = {
+        title,
+        description,
+        slug,
+        price: rest.price,
+        image: rest.image || '',
+        accessContent: rest.accessContent,
+        features: JSON.stringify(rest.features || []),
+        isActive: rest.isActive,
+    };
+
     await prisma.course.upsert({
-        where: { id: course.id },
-        update: {
-            title: course.title,
-            description: course.description,
-            price: course.price,
-            slug: course.slug,
-            image: course.image,
-            accessContent: course.accessContent,
-            features: JSON.stringify(course.features),
-            isActive: course.isActive,
-        },
+        where: { id: id },
+        update: courseData,
         create: {
-            id: course.id,
-            title: course.title,
-            description: course.description,
-            price: course.price,
-            slug: course.slug,
-            image: course.image,
-            accessContent: course.accessContent,
-            features: JSON.stringify(course.features),
-            isActive: course.isActive ?? true,
+            id: id,
+            ...courseData,
+            isActive: rest.isActive ?? true,
         }
     });
 }

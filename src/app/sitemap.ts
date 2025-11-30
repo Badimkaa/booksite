@@ -1,14 +1,13 @@
 import { MetadataRoute } from 'next';
-import { getChapters, getCourses, getSchedule } from '@/lib/db';
+import { getChapters, getCourses } from '@/lib/db';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://feelyourwoman.ru';
 
     // Get dynamic content
-    const [chapters, courses, scheduleEvents] = await Promise.all([
+    const [chapters, courses] = await Promise.all([
         getChapters(),
         getCourses(),
-        getSchedule(),
     ]);
 
     // Static pages

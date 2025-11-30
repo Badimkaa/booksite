@@ -1,6 +1,5 @@
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
-import { cookies } from 'next/headers';
 import { getChapter, getChapters } from '@/lib/db';
 import { isAuthenticated } from '@/lib/auth';
 import { formatDate } from '@/lib/utils';

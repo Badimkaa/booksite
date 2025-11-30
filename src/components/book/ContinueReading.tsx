@@ -1,25 +1,26 @@
 
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/Button';
 import { BookOpen } from 'lucide-react';
 
 export default function ContinueReading({ firstChapterSlug }: { firstChapterSlug?: string }) {
-    const [lastRead, setLastRead] = useState<{ slug: string; title: string } | null>(null);
-    const [mounted, setMounted] = useState(false);
-
-    useEffect(() => {
-        const slug = localStorage.getItem('lastReadSlug');
-        const title = localStorage.getItem('lastReadTitle');
-        if (slug && title) {
-            setLastRead({ slug, title });
+    const [lastRead] = useState<{ slug: string; title: string } | null>(() => {
+        if (typeof window !== 'undefined') {
+            const slug = localStorage.getItem('lastReadSlug');
+            const title = localStorage.getItem('lastReadTitle');
+            if (slug && title) {
+                return { slug, title };
+            }
         }
-        setMounted(true);
-    }, []);
+        return null;
+    });
 
-    if (!mounted) return null;
+    if (!lastRead && !firstChapterSlug) {
+        return null;
+    }
 
     if (lastRead) {
         return (
