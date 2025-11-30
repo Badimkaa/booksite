@@ -115,3 +115,34 @@ model SiteSettings {
   description String
   bookTitle   String @default("Моя Книга")
 }
+
+model MentorshipApplication {
+  id        String   @id @default(uuid())
+  name      String   // Вопрос 1 (имя/состояние)
+  
+  // Блок 1. Состояние
+  stateOneWord String // 1. Одно слово
+  bodyMessage  String // 2. О чем говорит тело (JSON string array)
+  mainFeeling  String // 3. Какое чувство фонит (JSON string array)
+  
+  // Блок 2. Этап Пути
+  butterflyStage String // 4. Стадия бабочки
+  
+  // Блок 3. Отношения
+  relations String // 5. Отношения
+  familySupport String? // 6. Поддержка рода
+  
+  // Блок 4. Потребность
+  supportNeeded String // 7. Поддержка (JSON string array)
+  preferredFormat String // 8. Формат (JSON string array)
+  
+  // Блок 5. Границы
+  contactLevel String // 9. Уровень контакта (JSON string array)
+  
+  // Блок 6. Открытое сердце
+  personalMessage String? // 10. Личное сообщение
+  telegram        String? // 11. Телеграм
+  
+  status    String   @default("new") // 'new', 'read', 'archived'
+  createdAt DateTime @default(now())
+}

@@ -32,7 +32,7 @@ export function Header() {
     const navLinks = [
         { href: '/book', label: 'Книга' },
         { href: '/courses', label: 'Курсы' },
-        { href: '/mentorship', label: 'Наставничество' },
+        { href: '/mentorship', label: 'Твой Путь' },
         { href: '/schedule', label: 'Расписание' },
         { href: '/feedback', label: 'Контакты' },
     ];

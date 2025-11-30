@@ -134,6 +134,7 @@ export function AdminSidebar({ role, registrationsCount = 0 }: AdminSidebarProps
                     <NavItem href="/admin/courses" icon={GraduationCap} label="Курсы" pathname={pathname} isCollapsed={isCollapsed} />
                     <NavItem href="/admin/schedule" icon={Calendar} label="Расписание" pathname={pathname} isCollapsed={isCollapsed} />
                     <NavItem href="/admin/registrations" icon={Mail} label="Заявки" count={registrationsCount} pathname={pathname} isCollapsed={isCollapsed} />
+                    <NavItem href="/admin/mentorship" icon={BookOpen} label="Анкеты" pathname={pathname} isCollapsed={isCollapsed} />
 
                     {role === 'SUPER_ADMIN' && (
                         <NavItem href="/admin/users" icon={Users} label="Пользователи" pathname={pathname} isCollapsed={isCollapsed} />
