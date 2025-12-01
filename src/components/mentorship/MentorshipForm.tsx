@@ -16,14 +16,14 @@ const formSchema = z.object({
     stateOneWord: z.string().min(1, "Это поле обязательно"),
     bodyMessage: z.array(z.string()).min(1, "Выберите хотя бы один вариант"),
     mainFeeling: z.array(z.string()).min(1, "Выберите хотя бы один вариант"),
-    butterflyStage: z.string().min(1, "Выберите вариант"),
-    relations: z.string().min(1, "Выберите вариант"),
-    familySupport: z.string().optional(),
-    supportNeeded: z.array(z.string()).min(1, "Выберите хотя бы один вариант"),
-    preferredFormat: z.array(z.string()).min(1, "Выберите хотя бы один вариант"),
-    contactLevel: z.array(z.string()).min(1, "Выберите вариант"),
+    butterflyStage: z.string().nullable().refine(val => val !== null && val.length > 0, { message: "Выберите вариант" }),
+    relations: z.string().nullable().optional(),
+    familySupport: z.string().nullable().optional(),
+    supportNeeded: z.array(z.string()).optional(),
+    preferredFormat: z.array(z.string()).optional(),
+    contactLevel: z.array(z.string()).optional(),
     personalMessage: z.string().optional(),
-    telegram: z.string().optional(),
+    telegram: z.string().min(1, "Это поле обязательно"),
 });
 
 type FormData = z.infer<typeof formSchema>;
@@ -185,17 +185,21 @@ export function MentorshipForm() {
                     <h3 className="text-2xl font-serif font-bold text-primary">Блок 1. Состояние (Тело и Эмоции)</h3>
 
                     <div className="space-y-3">
-                        <label className="text-lg font-medium">1. Если бы твое состояние сегодня можно было описать одним словом или образом, что бы это было?</label>
+                        <label className="text-lg font-medium">
+                            1. Если бы твое состояние сегодня можно было описать одним словом или образом, что бы это было? <span className="text-destructive">*</span>
+                        </label>
                         <Input {...register('stateOneWord')} placeholder="Твой ответ..." className="text-lg p-6" />
                         {errors.stateOneWord && <p className="text-destructive text-sm">{errors.stateOneWord.message}</p>}
                     </div>
 
                     <div className="space-y-3">
-                        <label className="text-lg font-medium">2. О чем сейчас говорит твое тело? (Можно несколько)</label>
+                        <label className="text-lg font-medium">
+                            2. О чем сейчас говорит твое тело? (Можно несколько) <span className="text-destructive">*</span>
+                        </label>
                         <div className="space-y-2">
                             {questions.bodyMessage.map((option) => (
                                 <label key={option} className="flex items-start gap-3 p-3 rounded-lg hover:bg-muted/50 cursor-pointer transition-colors">
-                                    <input type="checkbox" value={option} {...register('bodyMessage')} className="mt-1.5 w-5 h-5 accent-primary" />
+                                    <input type="checkbox" value={option} {...register('bodyMessage')} className="mt-1.5 w-5 h-5 min-w-5 accent-primary" />
                                     <span className="text-lg leading-relaxed">{option}</span>
                                 </label>
                             ))}
@@ -204,11 +208,13 @@ export function MentorshipForm() {
                     </div>
 
                     <div className="space-y-3">
-                        <label className="text-lg font-medium">3. Какое чувство сейчас фонит громче всего? (Можно несколько)</label>
+                        <label className="text-lg font-medium">
+                            3. Какое чувство сейчас фонит громче всего? (Можно несколько) <span className="text-destructive">*</span>
+                        </label>
                         <div className="space-y-2">
                             {questions.mainFeeling.map((option) => (
                                 <label key={option} className="flex items-start gap-3 p-3 rounded-lg hover:bg-muted/50 cursor-pointer transition-colors">
-                                    <input type="checkbox" value={option} {...register('mainFeeling')} className="mt-1.5 w-5 h-5 accent-primary" />
+                                    <input type="checkbox" value={option} {...register('mainFeeling')} className="mt-1.5 w-5 h-5 min-w-5 accent-primary" />
                                     <span className="text-lg leading-relaxed">{option}</span>
                                 </label>
                             ))}
@@ -221,11 +227,13 @@ export function MentorshipForm() {
                 <section className="space-y-6">
                     <h3 className="text-2xl font-serif font-bold text-primary">Блок 2. Этап Пути (Метафора Бабочки)</h3>
                     <div className="space-y-3">
-                        <label className="text-lg font-medium">4. Где ты ощущаешь себя прямо сейчас?</label>
+                        <label className="text-lg font-medium">
+                            4. Где ты ощущаешь себя прямо сейчас? <span className="text-destructive">*</span>
+                        </label>
                         <div className="space-y-2">
                             {questions.butterflyStage.map((option) => (
                                 <label key={option} className="flex items-start gap-3 p-3 rounded-lg hover:bg-muted/50 cursor-pointer transition-colors">
-                                    <input type="radio" value={option} {...register('butterflyStage')} className="mt-1.5 w-5 h-5 accent-primary" />
+                                    <input type="radio" value={option} {...register('butterflyStage')} className="mt-1.5 w-5 h-5 min-w-5 accent-primary" />
                                     <span className="text-lg leading-relaxed">{option}</span>
                                 </label>
                             ))}
@@ -242,7 +250,7 @@ export function MentorshipForm() {
                         <div className="space-y-2">
                             {questions.relations.map((option) => (
                                 <label key={option} className="flex items-start gap-3 p-3 rounded-lg hover:bg-muted/50 cursor-pointer transition-colors">
-                                    <input type="radio" value={option} {...register('relations')} className="mt-1.5 w-5 h-5 accent-primary" />
+                                    <input type="radio" value={option} {...register('relations')} className="mt-1.5 w-5 h-5 min-w-5 accent-primary" />
                                     <span className="text-lg leading-relaxed">{option}</span>
                                 </label>
                             ))}
@@ -255,7 +263,7 @@ export function MentorshipForm() {
                         <div className="space-y-2">
                             {questions.familySupport.map((option) => (
                                 <label key={option} className="flex items-start gap-3 p-3 rounded-lg hover:bg-muted/50 cursor-pointer transition-colors">
-                                    <input type="radio" value={option} {...register('familySupport')} className="mt-1.5 w-5 h-5 accent-primary" />
+                                    <input type="radio" value={option} {...register('familySupport')} className="mt-1.5 w-5 h-5 min-w-5 accent-primary" />
                                     <span className="text-lg leading-relaxed">{option}</span>
                                 </label>
                             ))}
@@ -271,7 +279,7 @@ export function MentorshipForm() {
                         <div className="space-y-2">
                             {questions.supportNeeded.map((option) => (
                                 <label key={option} className="flex items-start gap-3 p-3 rounded-lg hover:bg-muted/50 cursor-pointer transition-colors">
-                                    <input type="checkbox" value={option} {...register('supportNeeded')} className="mt-1.5 w-5 h-5 accent-primary" />
+                                    <input type="checkbox" value={option} {...register('supportNeeded')} className="mt-1.5 w-5 h-5 min-w-5 accent-primary" />
                                     <span className="text-lg leading-relaxed">{option}</span>
                                 </label>
                             ))}
@@ -284,7 +292,7 @@ export function MentorshipForm() {
                         <div className="space-y-2">
                             {questions.preferredFormat.map((option) => (
                                 <label key={option} className="flex items-start gap-3 p-3 rounded-lg hover:bg-muted/50 cursor-pointer transition-colors">
-                                    <input type="checkbox" value={option} {...register('preferredFormat')} className="mt-1.5 w-5 h-5 accent-primary" />
+                                    <input type="checkbox" value={option} {...register('preferredFormat')} className="mt-1.5 w-5 h-5 min-w-5 accent-primary" />
                                     <span className="text-lg leading-relaxed">{option}</span>
                                 </label>
                             ))}
@@ -301,7 +309,7 @@ export function MentorshipForm() {
                         <div className="space-y-2">
                             {questions.contactLevel.map((option) => (
                                 <label key={option} className="flex items-start gap-3 p-3 rounded-lg hover:bg-muted/50 cursor-pointer transition-colors">
-                                    <input type="checkbox" value={option} {...register('contactLevel')} className="mt-1.5 w-5 h-5 accent-primary" />
+                                    <input type="checkbox" value={option} {...register('contactLevel')} className="mt-1.5 w-5 h-5 min-w-5 accent-primary" />
                                     <span className="text-lg leading-relaxed">{option}</span>
                                 </label>
                             ))}
@@ -319,8 +327,11 @@ export function MentorshipForm() {
                     </div>
 
                     <div className="space-y-3">
-                        <label className="text-lg font-medium">11. Твой ник в Telegram (для связи)</label>
+                        <label className="text-lg font-medium">
+                            11. Твой ник в Telegram (для связи) <span className="text-destructive">*</span>
+                        </label>
                         <Input {...register('telegram')} placeholder="@username" className="text-lg p-6" />
+                        {errors.telegram && <p className="text-destructive text-sm">{errors.telegram.message}</p>}
                     </div>
                 </section>
 

@@ -2,7 +2,7 @@ import { prisma } from '@/lib/db';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import Link from 'next/link';
-import { Eye } from 'lucide-react';
+import { Eye, FileSpreadsheet } from 'lucide-react';
 
 export const dynamic = 'force-dynamic';
 
@@ -14,10 +14,18 @@ export default async function AdminMentorshipPage() {
     return (
         <div className="space-y-6">
             <div className="flex items-center justify-between">
-                <h1 className="text-3xl font-bold tracking-tight">Анкеты "Твой Путь"</h1>
-                <div className="text-muted-foreground">
-                    Всего: {applications.length}
+                <div className="space-y-1">
+                    <h1 className="text-3xl font-bold tracking-tight">Ответы на форму</h1>
+                    <div className="text-muted-foreground">
+                        Всего: {applications.length}
+                    </div>
                 </div>
+                <Link href="https://docs.google.com/spreadsheets/d/1ZNlkMRc8e5dezGpsYAceXdfMbW9YlqXE6G6FMv2jF0A" target="_blank">
+                    <Button variant="outline" className="gap-2">
+                        <FileSpreadsheet className="h-4 w-4 text-green-600" />
+                        Открыть Google Таблицу
+                    </Button>
+                </Link>
             </div>
 
             <div className="grid gap-4">

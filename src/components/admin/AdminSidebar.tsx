@@ -16,7 +16,8 @@ import {
     ChevronLeft,
     ChevronRight,
     Menu,
-    Mail
+    Mail,
+    FileText
 } from 'lucide-react';
 import { LogoutButton } from '@/components/admin/LogoutButton';
 import { cn } from '@/lib/utils';
@@ -134,7 +135,7 @@ export function AdminSidebar({ role, registrationsCount = 0 }: AdminSidebarProps
                     <NavItem href="/admin/courses" icon={GraduationCap} label="Курсы" pathname={pathname} isCollapsed={isCollapsed} />
                     <NavItem href="/admin/schedule" icon={Calendar} label="Расписание" pathname={pathname} isCollapsed={isCollapsed} />
                     <NavItem href="/admin/registrations" icon={Mail} label="Заявки" count={registrationsCount} pathname={pathname} isCollapsed={isCollapsed} />
-                    <NavItem href="/admin/mentorship" icon={BookOpen} label="Анкеты" pathname={pathname} isCollapsed={isCollapsed} />
+                    <NavItem href="/admin/mentorship" icon={FileText} label="Ответы на форму" pathname={pathname} isCollapsed={isCollapsed} />
 
                     {role === 'SUPER_ADMIN' && (
                         <NavItem href="/admin/users" icon={Users} label="Пользователи" pathname={pathname} isCollapsed={isCollapsed} />
