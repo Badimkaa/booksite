@@ -11,7 +11,7 @@ if (process.env.NODE_ENV === 'production' && secret === 'default-secret-change-m
 
 const JWT_SECRET = new TextEncoder().encode(secret);
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
     // Check if the request is for the admin area
     if (request.nextUrl.pathname.startsWith('/admin')) {
         const token = request.cookies.get('auth_token')?.value;
