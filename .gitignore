@@ -47,3 +47,4 @@ next-env.d.ts
 /src/generated/prisma
 prisma/dev.db
 google-credentials.json
+\n# Test files\n*.test.ts\n*.test.tsx
