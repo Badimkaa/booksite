@@ -1,8 +1,7 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/db';
 import { z } from 'zod';
-import { google } from 'googleapis';
-import path from 'path';
+import { appendToSheet } from '@/lib/google-sheets';
 
 // Schema for validation
 const applicationSchema = z.object({
@@ -18,48 +17,6 @@ const applicationSchema = z.object({
     personalMessage: z.string().optional(),
     telegram: z.string().optional(),
 });
-
-const SPREADSHEET_ID = '1ZNlkMRc8e5dezGpsYAceXdfMbW9YlqXE6G6FMv2jF0A';
-const CREDENTIALS_PATH = path.join(process.cwd(), 'google-credentials.json');
-
-async function appendToSheet(data: any) {
-    try {
-        const auth = new google.auth.GoogleAuth({
-            keyFile: CREDENTIALS_PATH,
-            scopes: ['https://www.googleapis.com/auth/spreadsheets'],
-        });
-
-        const sheets = google.sheets({ version: 'v4', auth });
-
-        // Prepare row data
-        const row = [
-            new Date().toLocaleString('ru-RU'), // Timestamp
-            data.stateOneWord,
-            data.bodyMessage.join(', '),
-            data.mainFeeling.join(', '),
-            data.butterflyStage,
-            data.relations,
-            data.familySupport || '-',
-            data.supportNeeded.join(', '),
-            data.preferredFormat.join(', '),
-            data.contactLevel.join(', '),
-            data.personalMessage || '-',
-            data.telegram || '-'
-        ];
-
-        await sheets.spreadsheets.values.append({
-            spreadsheetId: SPREADSHEET_ID,
-            range: 'A1', // Appends to the first sheet
-            valueInputOption: 'USER_ENTERED',
-            requestBody: {
-                values: [row],
-            },
-        });
-    } catch (error) {
-        console.error('Google Sheets Error:', error);
-        // We don't throw here to ensure DB save is not rolled back if Sheets fails
-    }
-}
 
 export async function POST(req: Request) {
     try {
