@@ -120,7 +120,8 @@ export async function getCourses(): Promise<Course[]> {
     // Parse features from JSON string
     return courses.map((c): Course => ({
         ...c,
-        features: JSON.parse(c.features) as string[]
+        features: JSON.parse(c.features) as string[],
+        details: c.details
     }));
 }
 
@@ -129,7 +130,8 @@ export async function getCourseById(id: string): Promise<Course | null> {
     if (!course) return null;
     return {
         ...course,
-        features: JSON.parse(course.features) as string[]
+        features: JSON.parse(course.features) as string[],
+        details: course.details
     } as Course;
 }
 
@@ -138,7 +140,8 @@ export async function getCourse(slug: string): Promise<Course | null> {
     if (!course) return null;
     return {
         ...course,
-        features: JSON.parse(course.features) as string[]
+        features: JSON.parse(course.features) as string[],
+        details: course.details
     } as Course;
 }
 
@@ -157,6 +160,7 @@ export async function saveCourse(course: Partial<Course> & { id: string }): Prom
         image: rest.image || '',
         accessContent: rest.accessContent,
         features: JSON.stringify(rest.features || []),
+        details: rest.details,
         isActive: rest.isActive,
     };
 

@@ -8,6 +8,7 @@ import { ArrowLeft, Save } from 'lucide-react';
 import { writeFile, unlink } from 'fs/promises';
 import path from 'path';
 import { DeleteButton } from '@/components/admin/DeleteButton';
+import { RichTextEditorInput } from '@/components/admin/RichTextEditorInput';
 
 interface CourseEditorProps {
     params: Promise<{
@@ -28,6 +29,7 @@ export default async function CourseEditorPage({ params }: CourseEditorProps) {
         image: '',
         accessContent: null,
         features: [],
+        details: null,
         isActive: true,
         createdAt: new Date(),
         updatedAt: new Date()
@@ -49,6 +51,7 @@ export default async function CourseEditorPage({ params }: CourseEditorProps) {
         const slug = formData.get('slug') as string;
         const accessContent = formData.get('accessContent') as string;
         const featuresString = formData.get('features') as string;
+        const details = formData.get('details') as string;
         const isActive = formData.get('isActive') === 'on';
         const imageFile = formData.get('image') as File;
 
@@ -83,6 +86,7 @@ export default async function CourseEditorPage({ params }: CourseEditorProps) {
             image: imagePath,
             features: featuresString.split('\n').filter(f => f.trim() !== ''),
             accessContent,
+            details: details || null,
             isActive,
             createdAt: course?.createdAt || new Date(),
             updatedAt: new Date(),
@@ -187,6 +191,15 @@ export default async function CourseEditorPage({ params }: CourseEditorProps) {
                             required
                             rows={4}
                             className="flex w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                        />
+                    </div>
+
+                    <div className="grid gap-2">
+                        <RichTextEditorInput
+                            name="details"
+                            label="Подробное описание (блок на странице курса)"
+                            defaultValue={course.details || ''}
+                            placeholder="Опишите курс подробно..."
                         />
                     </div>
 

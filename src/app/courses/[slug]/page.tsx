@@ -66,6 +66,23 @@ export default async function CoursePage({ params }: CoursePageProps) {
                                 ))}
                             </ul>
                         </div>
+
+                        {course.details && (
+                            <div className="mt-16">
+                                <div className="bg-secondary/10 rounded-3xl p-8 md:p-10 border border-secondary/20 relative overflow-hidden">
+                                    {/* Decorative background element */}
+                                    <div className="absolute -top-20 -right-20 w-64 h-64 bg-primary/5 rounded-full blur-3xl pointer-events-none" />
+
+                                    <h2 className="text-2xl md:text-3xl font-bold mb-8 font-serif text-foreground relative z-10">
+                                        Подробнее о программе
+                                    </h2>
+                                    <div
+                                        className="prose prose-lg dark:prose-invert max-w-none prose-headings:font-serif prose-p:text-muted-foreground prose-li:text-muted-foreground relative z-10"
+                                        dangerouslySetInnerHTML={{ __html: course.details }}
+                                    />
+                                </div>
+                            </div>
+                        )}
                     </div>
 
                     <div className="lg:sticky lg:top-24">

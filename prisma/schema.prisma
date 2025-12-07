@@ -28,6 +28,7 @@ model Course {
   image         String
   accessContent String?
   features      String   // Stored as JSON string
+  details       String?  // Detailed description (HTML)
   isActive      Boolean  @default(true)
   order         Int      @default(0)
   createdAt     DateTime @default(now())

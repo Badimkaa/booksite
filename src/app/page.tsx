@@ -42,6 +42,13 @@ export default async function Home() {
                 </Button>
               </Link>
             </div>
+            <div className="pt-2 flex justify-center md:justify-start">
+              <Link href="/mentorship#questionnaire">
+                <Button variant="ghost" className="text-primary hover:text-primary/80 hover:bg-primary/5 underline-offset-4 hover:underline">
+                  Пройти Анкету-Рефлексию
+                </Button>
+              </Link>
+            </div>
           </div>
           <div className="flex-1 relative w-full max-w-md aspect-[3/4] md:aspect-square bg-muted rounded-2xl overflow-hidden shadow-2xl rotate-3">
             {/* Placeholder for photo */}
