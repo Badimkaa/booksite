@@ -6,6 +6,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { ArrowLeft, Save } from 'lucide-react';
 import Link from 'next/link';
 import { DeleteButton } from '@/components/admin/DeleteButton';
+import { fromMoscowISOString, toMoscowISOString } from '@/lib/date-utils';
 
 interface EventEditorProps {
     params: Promise<{
@@ -39,16 +40,19 @@ export default async function EventEditorPage({ params }: EventEditorProps) {
         'use server';
 
         const title = formData.get('title') as string;
-        const date = formData.get('date') as string;
+        const dateString = formData.get('date') as string;
         const type = formData.get('type') as 'online' | 'offline';
         const location = formData.get('location') as string;
         const link = formData.get('link') as string;
         const price = Number(formData.get('price'));
 
+        // Convert the input string (which assumes Moscow time) to a UTC Date
+        const date = fromMoscowISOString(dateString);
+
         const newEvent: ScheduleEvent = {
             id: isNew ? uuidv4() : id,
             title,
-            date: new Date(date),
+            date,
             type,
             location,
             link,
@@ -93,12 +97,13 @@ export default async function EventEditorPage({ params }: EventEditorProps) {
 
                     <div className="grid grid-cols-2 gap-4">
                         <div className="grid gap-2">
-                            <label htmlFor="date" className="font-medium">Дата и время</label>
+                            <label htmlFor="date" className="font-medium">Дата и время (по Мск)</label>
                             <input
                                 type="datetime-local"
                                 id="date"
                                 name="date"
-                                defaultValue={event.date instanceof Date ? event.date.toISOString().slice(0, 16) : new Date(event.date).toISOString().slice(0, 16)}
+                                // Pre-fill with Moscow time representation of the event date
+                                defaultValue={toMoscowISOString(event.date)}
                                 required
                                 className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                             />

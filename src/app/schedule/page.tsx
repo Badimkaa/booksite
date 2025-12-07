@@ -12,8 +12,8 @@ export default async function SchedulePage() {
         <div className="min-h-screen bg-background font-serif py-16 md:py-24">
             <div className="container mx-auto px-4 max-w-4xl">
                 <header className="text-center mb-16">
-                    <h1 className="text-4xl md:text-5xl font-bold mb-6">Расписание</h1>
-                    <p className="text-xl text-muted-foreground">
+                    <h1 className="text-4xl md:text-5xl font-bold font-serif mb-6" style={{ fontFamily: 'var(--font-merriweather)' }}>Расписание</h1>
+                    <p className="text-xl text-muted-foreground font-serif" style={{ fontFamily: 'var(--font-merriweather)' }}>
                         Ближайшие встречи, практики и вебинары.
                     </p>
                 </header>

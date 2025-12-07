@@ -3,8 +3,8 @@
 import { useState } from 'react';
 import { ScheduleEvent } from '@/types';
 import { Button } from '@/components/ui/Button';
-import { MapPin, Video, Clock } from 'lucide-react';
-import { formatDate } from '@/lib/utils';
+import { MapPin, Video, Clock, ExternalLink } from 'lucide-react';
+import { formatLocalDate, formatLocalTime, getLocalDay, formatLocalDayMonth, formatLocalWeekday } from '@/lib/date-utils';
 import RegistrationModal from '@/components/schedule/RegistrationModal';
 
 interface ScheduleListProps {
@@ -29,13 +29,13 @@ export default function ScheduleList({ upcomingEvents, pastEvents }: ScheduleLis
                         <div key={event.id} className="bg-card border rounded-2xl p-6 md:p-8 flex flex-col md:flex-row gap-6 hover:border-primary/50 transition-colors shadow-sm">
                             <div className="flex flex-col items-center justify-center bg-primary/5 rounded-xl p-4 min-w-[100px] text-center">
                                 <span className="text-3xl font-bold text-primary">
-                                    {new Date(event.date).getDate()}
+                                    {getLocalDay(new Date(event.date))}
                                 </span>
                                 <span className="text-sm font-medium uppercase tracking-wider text-muted-foreground">
-                                    {new Date(event.date).toLocaleDateString('ru-RU', { month: 'short' })}
+                                    {formatLocalDayMonth(new Date(event.date)).split(' ')[1]}
                                 </span>
                                 <span className="text-xs text-muted-foreground mt-1">
-                                    {new Date(event.date).toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' })}
+                                    {formatLocalTime(new Date(event.date))}
                                 </span>
                             </div>
 
@@ -53,23 +53,35 @@ export default function ScheduleList({ upcomingEvents, pastEvents }: ScheduleLis
                                         </>
                                     )}
                                 </div>
-                                <h3 className="text-2xl font-bold">{event.title}</h3>
+                                <h3 className="text-2xl font-bold font-serif" style={{ fontFamily: 'var(--font-merriweather)' }}>{event.title}</h3>
                                 <div className="flex items-center gap-2 text-muted-foreground">
                                     <Clock className="h-4 w-4" />
-                                    <span>{new Date(event.date).toLocaleDateString('ru-RU', { weekday: 'long' })}</span>
+                                    <span className="capitalize">{formatLocalWeekday(new Date(event.date))}</span>
                                     {event.location && (
                                         <>
                                             <span>•</span>
-                                            <span>{event.location}</span>
+                                            {event.location.startsWith('http') ? (
+                                                <a
+                                                    href={event.location}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    className="inline-flex items-center gap-1 text-primary hover:underline underline-offset-4 transition-colors"
+                                                >
+                                                    Ссылка на встречу
+                                                    <ExternalLink className="h-3 w-3" />
+                                                </a>
+                                            ) : (
+                                                <span>{event.location}</span>
+                                            )}
                                         </>
                                     )}
                                 </div>
                             </div>
 
                             <div className="flex flex-col justify-center gap-3 min-w-[140px]">
-                                {event.price && (
+                                {event.price !== null && (
                                     <div className="text-xl font-bold text-center md:text-right">
-                                        {event.price} ₽
+                                        {event.price === 0 ? 'Бесплатно' : `${event.price} ₽`}
                                     </div>
                                 )}
                                 <Button className="w-full" onClick={() => handleRegister(event)}>
@@ -90,15 +102,15 @@ export default function ScheduleList({ upcomingEvents, pastEvents }: ScheduleLis
 
             {pastEvents.length > 0 && (
                 <div className="mt-20 opacity-60">
-                    <h2 className="text-2xl font-bold mb-8 text-center">Прошедшие мероприятия</h2>
+                    <h2 className="text-2xl font-bold mb-8 text-center font-serif" style={{ fontFamily: 'var(--font-merriweather)' }}>Прошедшие мероприятия</h2>
                     <div className="space-y-4">
                         {pastEvents.map((event) => (
                             <div key={event.id} className="flex items-center justify-between p-4 border rounded-xl bg-muted/10">
                                 <div className="flex items-center gap-4">
                                     <div className="text-sm font-medium text-muted-foreground">
-                                        {formatDate(event.date)}
+                                        {formatLocalDate(new Date(event.date))}
                                     </div>
-                                    <div className="font-medium">{event.title}</div>
+                                    <div className="font-medium font-serif" style={{ fontFamily: 'var(--font-merriweather)' }}>{event.title}</div>
                                 </div>
                                 <div className="text-sm text-muted-foreground">Завершено</div>
                             </div>
