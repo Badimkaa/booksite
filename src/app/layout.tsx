@@ -70,6 +70,11 @@ export async function generateMetadata() {
       // google: 'your-google-verification-code',
       // yandex: 'your-yandex-verification-code',
     },
+    icons: {
+      icon: '/favicon.ico',
+      shortcut: '/favicon.ico',
+      apple: '/apple-touch-icon.png',
+    },
   };
 }
 
@@ -113,9 +118,6 @@ export default async function RootLayout({
       <head>
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
         <meta name="theme-color" content="#8b5cf6" />
-        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-        <link rel="icon" type="image/png" href="/favicon.png" />
-        <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
       </head>
       <body
         className={cn(
