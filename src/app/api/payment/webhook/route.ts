@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { getOrder, saveOrder } from '@/lib/orders';
 import { createProdamusSignature, parseProdamusBody } from '@/lib/prodamus';
+import { sendTelegramMessage } from '@/lib/telegram';
 
 const PRODAMUS_SECRET_KEY = process.env.PRODAMUS_SECRET_KEY;
 
@@ -70,6 +71,16 @@ export async function POST(request: Request) {
 
                     await saveOrder(order);
                     console.log(`Order ${targetOrderId} marked as paid`);
+
+                    // Send Telegram notification
+                    await sendTelegramMessage(`
+💰 <b>Оплата курса</b>
+
+📦 <b>Заказ:</b> ${order.courseId}
+💵 <b>Сумма:</b> ${sum}
+📧 <b>Email:</b> ${customer_email || 'Не указан'}
+📱 <b>Телефон:</b> ${customer_phone || 'Не указан'}
+                    `.trim());
                 } else {
                     console.warn(`Order ${targetOrderId} paid amount mismatch: expected ${order.amount}, got ${sum}`);
                 }

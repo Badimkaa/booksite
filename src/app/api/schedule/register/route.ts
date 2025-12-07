@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { saveRegistration } from '@/lib/db';
 import { Registration } from '@/types';
 import { v4 as uuidv4 } from 'uuid';
+import { sendTelegramMessage } from '@/lib/telegram';
 
 export async function POST(request: Request) {
     try {
@@ -26,6 +27,19 @@ export async function POST(request: Request) {
         };
 
         await saveRegistration(newRegistration);
+
+        // Send Telegram notification
+        const telegramMessage = `
+🎉 <b>Новая запись на мероприятие</b>
+
+📌 <b>Мероприятие:</b> ${eventTitle}
+👤 <b>Имя:</b> ${name}
+📧 <b>Email:</b> ${email}
+📱 <b>Контакт:</b> ${contact}
+${message ? `💬 <b>Сообщение:</b> ${message}` : ''}
+        `.trim();
+
+        await sendTelegramMessage(telegramMessage);
 
         return NextResponse.json({ success: true, registration: newRegistration });
     } catch (error) {
