@@ -84,7 +84,7 @@ export interface SiteSettings {
     title: string;
     description: string;
     bookTitle?: string;
-    heroImage?: string;
+    heroImage?: string | null;
 }
 
 export interface Order {
