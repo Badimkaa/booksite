@@ -8,8 +8,8 @@ export async function GET() {
 
 export async function POST(request: Request) {
     const body = await request.json();
-    const { title, description, bookTitle } = body;
-    console.log('Settings API received:', { title, description, bookTitle });
+    const { title, description, bookTitle, heroImage } = body;
+    console.log('Settings API received:', { title, description, bookTitle, heroImage });
 
     if (title === undefined) {
         return NextResponse.json({ error: 'Title is required' }, { status: 400 });
@@ -18,7 +18,8 @@ export async function POST(request: Request) {
     await saveSettings({
         title,
         description: description || '',
-        bookTitle: bookTitle !== undefined ? bookTitle : 'Моя Книга'
+        bookTitle: bookTitle !== undefined ? bookTitle : 'Моя Книга',
+        heroImage: heroImage
     });
     return NextResponse.json({ success: true });
 }

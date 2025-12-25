@@ -2,7 +2,7 @@ import { prisma } from '@/lib/db';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import Link from 'next/link';
-import { ArrowLeft, Calendar, User, MessageCircle } from 'lucide-react';
+import { ArrowLeft, User, MessageCircle } from 'lucide-react';
 import { notFound } from 'next/navigation';
 
 export const dynamic = 'force-dynamic';
@@ -18,7 +18,7 @@ function parseJson(jsonString: string) {
             return JSON.stringify(parsed); // Fallback for objects
         }
         return String(parsed); // Convert numbers/booleans to string
-    } catch (e) {
+    } catch {
         return jsonString;
     }
 }
@@ -40,8 +40,8 @@ export default async function AdminMentorshipDetailPage({ params }: { params: Pr
                 where: { id: app.id },
                 data: { status: 'read' }
             });
-        } catch (e) {
-            console.error('Failed to update status:', e);
+        } catch (error) {
+            console.error('Failed to update status:', error);
         }
     }
 
@@ -166,7 +166,7 @@ export default async function AdminMentorshipDetailPage({ params }: { params: Pr
                             <div>
                                 <div className="font-medium mb-2">Личное сообщение</div>
                                 <div className="p-6 bg-yellow-50/50 border border-yellow-100 rounded-lg italic text-lg">
-                                    "{app.personalMessage}"
+                                    &quot;{app.personalMessage}&quot;
                                 </div>
                             </div>
                         )}

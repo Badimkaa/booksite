@@ -1,6 +1,7 @@
 import * as fs from 'fs/promises';
 import * as jose from 'jose';
 import path from 'path';
+import { MentorshipApplication } from '@/types';
 
 const SPREADSHEET_ID = '1ZNlkMRc8e5dezGpsYAceXdfMbW9YlqXE6G6FMv2jF0A';
 const CREDENTIALS_PATH = path.join(process.cwd(), 'google-credentials.json');
@@ -55,7 +56,7 @@ async function getAccessToken(): Promise<string> {
     return access_token;
 }
 
-export async function appendToSheet(data: any) {
+export async function appendToSheet(data: Omit<MentorshipApplication, 'id' | 'status' | 'createdAt'>) {
     try {
         const accessToken = await getAccessToken();
 

@@ -49,6 +49,16 @@ export function flattenObject(obj: Record<string, unknown>, prefix = ''): Record
 }
 
 export function parseProdamusBody(body: string): JsonValue {
+    // Try parsing as JSON first
+    try {
+        const json = JSON.parse(body);
+        if (typeof json === 'object' && json !== null) {
+            return convertNumericKeysToArrays(json);
+        }
+    } catch {
+        // Not valid JSON, continue to URLSearchParams
+    }
+
     const params = new URLSearchParams(body);
     const data: { [key: string]: unknown } = {};
 

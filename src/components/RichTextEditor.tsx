@@ -37,6 +37,9 @@ export function RichTextEditor({ content, onChange, placeholder, className }: Ri
             ImageResize,
             Link.configure({
                 openOnClick: false,
+                HTMLAttributes: {
+                    class: 'text-primary underline'
+                }
             }),
             Placeholder.configure({
                 placeholder: placeholder || 'Начните писать...',

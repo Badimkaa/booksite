@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/Button';
 import { Course } from '@/types';
 import { v4 as uuidv4 } from 'uuid';
 import { ArrowLeft, Save } from 'lucide-react';
-import { writeFile, unlink } from 'fs/promises';
+import { writeFile, unlink, mkdir } from 'fs/promises';
 import path from 'path';
 import { DeleteButton } from '@/components/admin/DeleteButton';
 import { RichTextEditorInput } from '@/components/admin/RichTextEditorInput';
@@ -14,10 +14,14 @@ interface CourseEditorProps {
     params: Promise<{
         id: string;
     }>;
+    searchParams: Promise<{
+        error?: string;
+    }>;
 }
 
-export default async function CourseEditorPage({ params }: CourseEditorProps) {
+export default async function CourseEditorPage({ params, searchParams }: CourseEditorProps) {
     const { id } = await params;
+    const { error: hasError } = await searchParams;
     const isNew = id === 'new';
 
     let course: Course = {
@@ -46,53 +50,69 @@ export default async function CourseEditorPage({ params }: CourseEditorProps) {
     async function saveAction(formData: FormData) {
         'use server';
 
-        const title = formData.get('title') as string;
-        const description = formData.get('description') as string;
-        const slug = formData.get('slug') as string;
-        const accessContent = formData.get('accessContent') as string;
-        const featuresString = formData.get('features') as string;
-        const details = formData.get('details') as string;
-        const isActive = formData.get('isActive') === 'on';
-        const imageFile = formData.get('image') as File;
+        try {
+            const title = formData.get('title') as string;
+            const description = formData.get('description') as string;
+            const slug = formData.get('slug') as string;
+            const accessContent = formData.get('accessContent') as string;
+            const featuresString = formData.get('features') as string;
+            const details = formData.get('details') as string;
+            const isActive = formData.get('isActive') === 'on';
+            const imageFile = formData.get('image') as File;
 
-        let imagePath = course?.image;
+            let imagePath = course?.image;
 
-        if (imageFile && imageFile.size > 0) {
-            // Delete old image if exists
-            if (course.image && course.image.startsWith('/uploads/')) {
-                try {
-                    const oldFilename = course.image.replace('/uploads/', '');
-                    const oldFilepath = path.join(process.cwd(), 'public/uploads', oldFilename);
-                    await unlink(oldFilepath);
-                } catch (error) {
-                    console.error('Error deleting old image:', error);
+            if (imageFile && imageFile.size > 0) {
+                // Validate file size
+                if (imageFile.size > 10 * 1024 * 1024) {
+                    throw new Error('Файл слишком большой (максимум 10МБ)');
                 }
+
+                const uploadDir = path.join(process.cwd(), 'public/uploads');
+                await mkdir(uploadDir, { recursive: true });
+
+                // Delete old image if exists
+                if (course.image && course.image.startsWith('/uploads/')) {
+                    try {
+                        const oldFilename = course.image.replace('/uploads/', '');
+                        const oldFilepath = path.join(uploadDir, oldFilename);
+                        await unlink(oldFilepath);
+                    } catch (error) {
+                        console.error('Error deleting old image:', error);
+                    }
+                }
+
+                const buffer = Buffer.from(await imageFile.arrayBuffer());
+                const filename = `${uuidv4()}${path.extname(imageFile.name)}`;
+                const filepath = path.join(uploadDir, filename);
+                await writeFile(filepath, buffer);
+                imagePath = `/uploads/${filename}`;
             }
 
-            const buffer = Buffer.from(await imageFile.arrayBuffer());
-            const filename = `${uuidv4()}${path.extname(imageFile.name)}`;
-            const uploadDir = path.join(process.cwd(), 'public/uploads');
-            const filepath = path.join(uploadDir, filename);
-            await writeFile(filepath, buffer);
-            imagePath = `/uploads/${filename}`;
+            const newCourse: Course = {
+                id: isNew ? uuidv4() : id,
+                title,
+                description,
+                price: formData.get('price') ? Number(formData.get('price')) : null,
+                slug,
+                image: imagePath,
+                features: featuresString.split('\n').filter(f => f.trim() !== ''),
+                accessContent,
+                details: details || null,
+                isActive,
+                createdAt: course?.createdAt || new Date(),
+                updatedAt: new Date(),
+            };
+
+            await saveCourse(newCourse);
+        } catch (error) {
+            console.error('Failed to save course:', error);
+            // In a real app we would redirect back with an error message
+            // or use a client component with state. 
+            // For now, we'll let the error propagate or redirect with error.
+            return redirect(`/admin/courses/${id}?error=true`);
         }
 
-        const newCourse: Course = {
-            id: isNew ? uuidv4() : id,
-            title,
-            description,
-            price: formData.get('price') ? Number(formData.get('price')) : null,
-            slug,
-            image: imagePath,
-            features: featuresString.split('\n').filter(f => f.trim() !== ''),
-            accessContent,
-            details: details || null,
-            isActive,
-            createdAt: course?.createdAt || new Date(),
-            updatedAt: new Date(),
-        };
-
-        await saveCourse(newCourse);
         redirect('/admin/courses');
     }
 
@@ -112,6 +132,12 @@ export default async function CourseEditorPage({ params }: CourseEditorProps) {
                 <h1 className="text-3xl font-bold font-serif">
                     {isNew ? 'Создание курса' : 'Редактирование курса'}
                 </h1>
+
+                {hasError && (
+                    <div className="mt-4 p-4 bg-destructive/10 border border-destructive text-destructive rounded-md">
+                        Ошибка при сохранении курса. Возможно, файл слишком большой или произошла ошибка на сервере.
+                    </div>
+                )}
             </div>
 
             <form action={saveAction} className="space-y-8">

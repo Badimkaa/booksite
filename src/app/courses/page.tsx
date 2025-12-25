@@ -21,14 +21,32 @@ export default async function CoursesPage() {
     const courses = allCourses.filter(course => course.isActive !== false);
 
     return (
-        <div className="min-h-screen bg-background font-serif py-16 md:py-24">
+        <div className="min-h-screen bg-background font-sans pt-8 pb-16 md:pt-12 md:pb-24">
             <div className="container mx-auto px-4">
-                <header className="text-center max-w-3xl mx-auto mb-16">
-                    <h1 className="text-4xl md:text-5xl font-bold mb-6">Мои Курсы</h1>
-                    <p className="text-xl text-muted-foreground leading-relaxed">
-                        Программы, созданные с любовью и заботой о вашем здоровье.
-                        Выберите то, что откликается вам сейчас.
-                    </p>
+                <header className="text-center max-w-6xl mx-auto mb-16 px-4">
+                    <h1 className="text-4xl md:text-5xl font-bold mb-8">Мои Курсы</h1>
+
+                    <div className="space-y-8 text-lg md:text-xl text-muted-foreground leading-relaxed">
+                        <div className="bg-muted/30 p-8 md:p-12 rounded-2xl border border-border/50 text-base md:text-lg">
+                            <h3 className="text-foreground font-semibold mb-8 text-center text-xl">Если ты чувствуешь:</h3>
+                            <ul className="grid md:grid-flow-col md:grid-rows-4 gap-x-12 gap-y-4 text-left max-w-3xl mx-auto">
+                                {[
+                                    'усталость и напряжение в теле',
+                                    'тревогу или онемение',
+                                    'что живёшь «в голове»',
+                                    'что тело заморожено',
+                                    'что устала держать всё сама',
+                                    'что хочется тишины и честности',
+                                    'потерю опоры и контакта с собой'
+                                ].map((item, i) => (
+                                    <li key={i} className="flex items-start gap-3">
+                                        <span className="text-primary shrink-0 opacity-70">—</span>
+                                        <span>{item}</span>
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+                    </div>
                 </header>
 
                 <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -56,7 +74,7 @@ export default async function CoursesPage() {
 
                                 <div className="mt-auto space-y-6">
                                     <ul className="space-y-2">
-                                        {course.features.slice(0, 3).map((feature, i) => (
+                                        {course.features.slice(0, 4).map((feature, i) => (
                                             <li key={i} className="flex items-start gap-2 text-sm text-muted-foreground">
                                                 <CheckCircle2 className="h-4 w-4 text-primary shrink-0 mt-0.5" />
                                                 <span>{feature}</span>

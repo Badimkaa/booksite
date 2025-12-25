@@ -15,7 +15,7 @@ export function CookieConsent() {
             const timer = setTimeout(() => setIsVisible(true), 1000);
             return () => clearTimeout(timer);
         }
-        setIsMounted(true);
+        setTimeout(() => setIsMounted(true), 0);
     }, []);
 
     const handleAccept = () => {

@@ -52,7 +52,14 @@ export async function POST(request: Request) {
             return NextResponse.json({ error: 'Invalid signature' }, { status: 403 });
         }
 
-        const { order_id, order_num, payment_status, sum, customer_email, customer_phone } = data as { [key: string]: string };
+        const { order_id, order_num, payment_status, sum, customer_email, customer_phone, payment_init } = data as { [key: string]: string };
+
+        // Check if this is a manual payment (not initiated by our site)
+        // Prodamus sends payment_init='manual' for link payments, and order_num will be empty/absent
+        if (payment_init === 'manual' || !order_num) {
+            console.log(`Ignoring manual prodamus payment for order_id: ${order_id}`);
+            return new NextResponse('OK', { status: 200 });
+        }
 
         // Prodamus returns our custom UUID in 'order_num', and their internal ID in 'order_id'.
         // We need to look up by our UUID.

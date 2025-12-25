@@ -115,6 +115,7 @@ model SiteSettings {
   title       String
   description String
   bookTitle   String @default("Моя Книга")
+  heroImage   String?
 }
 
 model MentorshipApplication {

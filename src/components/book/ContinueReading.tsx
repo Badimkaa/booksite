@@ -8,15 +8,13 @@ import { BookOpen } from 'lucide-react';
 
 export default function ContinueReading({ firstChapterSlug }: { firstChapterSlug?: string }) {
     const [lastRead, setLastRead] = useState<{ slug: string; title: string } | null>(null);
-    const [mounted, setMounted] = useState(false);
 
     useEffect(() => {
         const slug = localStorage.getItem('lastReadSlug');
         const title = localStorage.getItem('lastReadTitle');
         if (slug && title) {
-            setLastRead({ slug, title });
+            setTimeout(() => setLastRead({ slug, title }), 0);
         }
-        setMounted(true);
     }, []);
 
     if (!lastRead && !firstChapterSlug) {

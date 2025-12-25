@@ -23,7 +23,7 @@ export default function MentorshipPage() {
                     <div className="max-w-3xl mx-auto mt-12 p-8 bg-card/50 backdrop-blur-sm rounded-2xl border shadow-sm animate-in fade-in zoom-in duration-700 delay-300">
                         <p className="text-lg md:text-xl leading-relaxed italic text-foreground/80">
                             «Я подхожу к женщине комплексно: эмоции, тело, движение, место в родовой системе — всё влияет на всё.
-                            Мы не "чиним" тело, мы бережно возвращаемся домой».
+                            Мы не &quot;чиним&quot; тело, мы бережно возвращаемся домой».
                         </p>
                     </div>
                 </div>
@@ -37,7 +37,7 @@ export default function MentorshipPage() {
                     </p>
                     <p className="text-lg text-muted-foreground leading-relaxed">
                         Чтобы понять, куда двигаться дальше, не нужно бежать быстрее. Нужно остановиться и заметить себя.
-                        Погрузиться в свое состояние и честно ответить: "Что я чувствую прямо сейчас?".
+                        Погрузиться в свое состояние и честно ответить: &quot;Что я чувствую прямо сейчас?&quot;.
                     </p>
                     <p className="text-lg font-medium text-primary">
                         Это не просто опрос. Это практика-рефлексия, первый шаг к диалогу с телом.

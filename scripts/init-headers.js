@@ -1,6 +1,6 @@
+/* eslint-disable @typescript-eslint/no-require-imports */
 const { google } = require('googleapis');
 const path = require('path');
-const fs = require('fs');
 
 const SPREADSHEET_ID = '1ZNlkMRc8e5dezGpsYAceXdfMbW9YlqXE6G6FMv2jF0A';
 const CREDENTIALS_PATH = path.join(process.cwd(), 'google-credentials.json');

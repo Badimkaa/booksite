@@ -8,7 +8,6 @@ import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { Textarea } from '@/components/ui/Textarea';
 import { Loader2, CheckCircle2 } from 'lucide-react';
-import { Card, CardContent } from '@/components/ui/Card';
 import Link from 'next/link';
 
 // Schema
@@ -96,7 +95,7 @@ export function MentorshipForm() {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [error, setError] = useState('');
 
-    const { register, handleSubmit, formState: { errors }, watch } = useForm<FormData>({
+    const { register, handleSubmit, formState: { errors } } = useForm<FormData>({
         resolver: zodResolver(formSchema),
         defaultValues: {
             bodyMessage: [],
@@ -121,7 +120,7 @@ export function MentorshipForm() {
 
             setIsSubmitted(true);
             window.scrollTo({ top: 0, behavior: 'smooth' });
-        } catch (err) {
+        } catch {
             setError('Произошла ошибка при отправке. Пожалуйста, попробуйте еще раз.');
         } finally {
             setIsSubmitting(false);

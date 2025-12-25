@@ -157,6 +157,7 @@ ssh root@IP_ВАШЕГО_СЕРВЕРА
         server_name ВАШ_ДОМЕН.RU www.ВАШ_ДОМЕН.RU;
 
         location / {
+            client_max_body_size 20M;
             proxy_pass http://localhost:3000;
             proxy_http_version 1.1;
             proxy_set_header Upgrade $http_upgrade;

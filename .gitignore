@@ -55,3 +55,6 @@ google-credentials.json
 
 # backups
 /backups
+# local uploads
+/public/uploads/*
+!/public/uploads/.gitkeep

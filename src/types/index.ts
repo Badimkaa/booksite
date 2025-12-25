@@ -84,6 +84,7 @@ export interface SiteSettings {
     title: string;
     description: string;
     bookTitle?: string;
+    heroImage?: string;
 }
 
 export interface Order {
@@ -95,4 +96,21 @@ export interface Order {
     customerPhone: string | null;
     createdAt: Date;
     updatedAt: Date;
+}
+
+export interface MentorshipApplication {
+    id: string;
+    stateOneWord: string;
+    bodyMessage: string[];
+    mainFeeling: string[];
+    butterflyStage: string;
+    relations: string;
+    familySupport: string | null;
+    supportNeeded: string[];
+    preferredFormat: string[];
+    contactLevel: string[];
+    personalMessage: string | null;
+    telegram: string | null;
+    status: string;
+    createdAt: Date;
 }

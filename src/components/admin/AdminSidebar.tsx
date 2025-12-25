@@ -70,7 +70,7 @@ export function AdminSidebar({ role, registrationsCount = 0 }: AdminSidebarProps
     useEffect(() => {
         if (typeof window !== 'undefined') {
             const stored = localStorage.getItem('admin-sidebar-collapsed') === 'true';
-            setIsCollapsed(stored);
+            setTimeout(() => setIsCollapsed(stored), 0);
         }
     }, []);
 

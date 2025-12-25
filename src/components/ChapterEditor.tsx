@@ -8,6 +8,18 @@ import { Input } from '@/components/ui/Input';
 import { Loader2 } from 'lucide-react';
 import { RichTextEditor } from './RichTextEditor';
 import { useNavigationBlocker } from '@/hooks/use-navigation-blocker';
+import { useForm, Controller } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import * as z from 'zod';
+
+const chapterSchema = z.object({
+    title: z.string().min(1, 'Название обязательно'),
+    excerpt: z.string().optional(),
+    content: z.string().optional(),
+    published: z.boolean(),
+});
+
+type ChapterFormValues = z.infer<typeof chapterSchema>;
 
 interface ChapterEditorProps {
     chapter?: Chapter;
@@ -16,30 +28,27 @@ interface ChapterEditorProps {
 export function ChapterEditor({ chapter }: ChapterEditorProps) {
     const router = useRouter();
     const [isLoading, setIsLoading] = useState(false);
-    const [title, setTitle] = useState(chapter?.title || '');
-    const [excerpt, setExcerpt] = useState(chapter?.excerpt || '');
-    const [content, setContent] = useState(chapter?.content || '');
-    const [published, setPublished] = useState(chapter?.published || false);
-    const [isDirty, setIsDirty] = useState(false);
+
+    const {
+        register,
+        control,
+        handleSubmit,
+        formState: { isDirty },
+        watch
+    } = useForm<ChapterFormValues>({
+        resolver: zodResolver(chapterSchema),
+        defaultValues: {
+            title: chapter?.title || '',
+            excerpt: chapter?.excerpt || '',
+            content: chapter?.content || '',
+            published: chapter?.published || false,
+        },
+    });
+
+    const published = watch('published');
 
     // Use custom navigation blocker
     useNavigationBlocker(isDirty);
-
-    // Check for unsaved changes
-    useEffect(() => {
-        const initialTitle = chapter?.title || '';
-        const initialExcerpt = chapter?.excerpt || '';
-        const initialContent = chapter?.content || '';
-        const initialPublished = chapter?.published || false;
-
-        const hasChanges =
-            title !== initialTitle ||
-            excerpt !== initialExcerpt ||
-            content !== initialContent ||
-            published !== initialPublished;
-
-        setIsDirty(hasChanges);
-    }, [title, excerpt, content, published, chapter]);
 
     // Warn on exit (browser refresh/close)
     useEffect(() => {
@@ -54,8 +63,7 @@ export function ChapterEditor({ chapter }: ChapterEditorProps) {
         return () => window.removeEventListener('beforeunload', handleBeforeUnload);
     }, [isDirty]);
 
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
+    const onSubmit = async (data: ChapterFormValues) => {
         setIsLoading(true);
 
         try {
@@ -64,10 +72,7 @@ export function ChapterEditor({ chapter }: ChapterEditorProps) {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     id: chapter?.id,
-                    title,
-                    excerpt,
-                    content,
-                    published,
+                    ...data,
                     createdAt: chapter?.createdAt,
                 }),
             });
@@ -108,24 +113,24 @@ export function ChapterEditor({ chapter }: ChapterEditorProps) {
     return (
         <div className="space-y-6 max-w-4xl mx-auto py-10 px-4">
             <div className="flex items-center justify-between">
-                <h1 className="text-2xl font-bold font-serif">
-                    {chapter ? 'Редактирование главы' : 'Новая глава'}
-                </h1>
-                {isDirty && (
-                    <span className="bg-yellow-100 text-yellow-800 text-xs font-medium px-2.5 py-0.5 rounded border border-yellow-200 animate-pulse">
-                        Не сохранено
-                    </span>
-                )}
+                <div className="flex items-center gap-4">
+                    <h1 className="text-2xl font-bold font-serif">
+                        {chapter ? 'Редактирование главы' : 'Новая глава'}
+                    </h1>
+                    {isDirty && (
+                        <span className="bg-yellow-100 text-yellow-800 text-xs font-medium px-2.5 py-0.5 rounded border border-yellow-200 animate-pulse">
+                            Не сохранено
+                        </span>
+                    )}
+                </div>
             </div>
 
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
                 <div>
                     <label className="block text-sm font-medium mb-1">Название</label>
                     <Input
-                        value={title}
-                        onChange={(e) => setTitle(e.target.value)}
+                        {...register('title')}
                         placeholder="Глава 1: Начало"
-                        required
                         className="text-lg font-serif"
                     />
                 </div>
@@ -133,11 +138,17 @@ export function ChapterEditor({ chapter }: ChapterEditorProps) {
                 <div>
                     <label className="block text-sm font-medium mb-1">Краткое описание (для оглавления)</label>
                     <div className="min-h-[150px]">
-                        <RichTextEditor
-                            content={excerpt}
-                            onChange={setExcerpt}
-                            placeholder="О чем эта глава..."
-                            className="prose-p:my-1 min-h-[150px]"
+                        <Controller
+                            name="excerpt"
+                            control={control}
+                            render={({ field }) => (
+                                <RichTextEditor
+                                    content={field.value || ''}
+                                    onChange={field.onChange}
+                                    placeholder="О чем эта глава..."
+                                    className="prose-p:my-1 min-h-[150px]"
+                                />
+                            )}
                         />
                     </div>
                     <p className="text-xs text-muted-foreground mt-1">
@@ -150,8 +161,7 @@ export function ChapterEditor({ chapter }: ChapterEditorProps) {
                         <input
                             type="checkbox"
                             id="published"
-                            checked={published}
-                            onChange={(e) => setPublished(e.target.checked)}
+                            {...register('published')}
                             className="h-5 w-5 rounded border-gray-300 mt-0.5"
                         />
                         <div className="flex-1">
@@ -169,10 +179,16 @@ export function ChapterEditor({ chapter }: ChapterEditorProps) {
 
                 <div>
                     <label className="block text-sm font-medium mb-1">Текст главы</label>
-                    <RichTextEditor
-                        content={content}
-                        onChange={setContent}
-                        placeholder="Пишите вашу книгу здесь..."
+                    <Controller
+                        name="content"
+                        control={control}
+                        render={({ field }) => (
+                            <RichTextEditor
+                                content={field.value || ''}
+                                onChange={field.onChange}
+                                placeholder="Пишите вашу книгу здесь..."
+                            />
+                        )}
                     />
                 </div>
 

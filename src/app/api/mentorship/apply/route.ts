@@ -51,8 +51,22 @@ export async function POST(req: Request) {
             },
         });
 
+        const safeData = {
+            stateOneWord: data.stateOneWord,
+            bodyMessage: data.bodyMessage,
+            mainFeeling: data.mainFeeling,
+            butterflyStage: data.butterflyStage || "",
+            relations: data.relations || "Не указано",
+            familySupport: data.familySupport || null,
+            supportNeeded: data.supportNeeded || [],
+            preferredFormat: data.preferredFormat || [],
+            contactLevel: data.contactLevel || [],
+            personalMessage: data.personalMessage || null,
+            telegram: data.telegram || null,
+        };
+
         // Send to Google Sheets
-        await appendToSheet(data);
+        await appendToSheet(safeData);
 
         return NextResponse.json({ success: true, id: application.id });
     } catch (error) {
